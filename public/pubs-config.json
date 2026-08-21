@@ -1,0 +1,17 @@
+[
+  {
+    "slot": "G4",
+    "name": "New and Promo 4",
+    "image": "/pubs/G4.png"
+  },
+  {
+    "slot": "G5",
+    "name": "New and Promo 5",
+    "image": "/pubs/G5.png"
+  },
+  {
+    "slot": "G6",
+    "name": "New and Promo 6",
+    "image": "/pubs/G6.png"
+  }
+]

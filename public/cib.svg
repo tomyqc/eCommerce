@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" role="img" aria-labelledby="title">
+  <title>CIB</title>
+  <rect width="120" height="70" rx="6" fill="#fff" stroke="#d1d5db"/>
+  <rect x="8" y="8" width="104" height="18" rx="3" fill="#087443"/>
+  <text x="60" y="21" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">CIB</text>
+  <path d="M16 48h88" stroke="#087443" stroke-width="3"/>
+  <text x="60" y="61" fill="#1f2937" font-family="Arial, sans-serif" font-size="9" text-anchor="middle">Carte Interbancaire</text>
+</svg>
