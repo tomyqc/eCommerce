@@ -13,6 +13,11 @@ const nextConfig = {
             hostname: 'ecommerce-5o5g.onrender.com',
             port: ""
           },
+          {
+            protocol: 'https',
+            hostname: 'localhost',
+            port: '3001'
+          },
         ],
       },
     env: {
