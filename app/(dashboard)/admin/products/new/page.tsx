@@ -8,6 +8,8 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getProductImageUrl } from "@/lib/product-image";
 
+const COLOR_OPTIONS = ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف", "وردي"];
+
 const AddNewProduct = () => {
   const [product, setProduct] = useState<{
     merchantId?: string;
@@ -45,8 +47,8 @@ const AddNewProduct = () => {
     categoryId: "",
   });
   const [otherColor, setOtherColor] = useState("");
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [additionalImages, setAdditionalImages] = useState<string[]>([]);
-  const colors = ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"];
   const [categories, setCategories] = useState<Category[]>([]);
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const addProduct = async () => {
@@ -102,6 +104,8 @@ const AddNewProduct = () => {
           size: "",
           color: "",
         }));
+        setSelectedColors([]);
+        setOtherColor("");
         setAdditionalImages([]);
       } else {
         const errorData = await response.json();
@@ -152,7 +156,7 @@ const AddNewProduct = () => {
   };
 
   const uploadAdditionalImage = async (file: File) => {
-    if (additionalImages.length + (product.mainImage ? 1 : 0) >= 5) {
+    if (additionalImages.length >= 4) {
       toast.error("A product can have a maximum of 5 photos including its main photo");
       return;
     }
@@ -217,7 +221,7 @@ const AddNewProduct = () => {
 
         <div className="flex flex-wrap gap-4">
           <label className="form-control w-full max-w-xs"><span className="label-text">Size:</span><input type="text" className="input input-bordered" value={product.size} placeholder="S, XL, 1000 g, 2 kg" onChange={(e) => setProduct({ ...product, size: e.target.value })} /></label>
-          <label className="form-control w-full max-w-xs"><span className="label-text">Color:</span><select className="select select-bordered" value={colors.includes(product.color) ? product.color : product.color ? "other" : ""} onChange={(e) => setProduct({ ...product, color: e.target.value === "other" ? otherColor : e.target.value })}><option value="">Select color</option>{colors.map((color) => <option key={color}>{color}</option>)}<option value="other">Other</option></select>{(!product.color || !colors.includes(product.color)) && <input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Custom color" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product, color: e.target.value }); }} />}</label>
+          <label className="form-control w-full max-w-xs"><span className="label-text">Color (multiple):</span><select multiple className="select select-bordered h-40" value={selectedColors} onChange={(e) => { const values = Array.from(e.target.selectedOptions, (option) => option.value); setSelectedColors(values); setProduct({ ...product, color: [...values, ...(otherColor ? [otherColor] : [])].join(", ") }); }}>{COLOR_OPTIONS.map((color) => <option key={color}>{color}</option>)}</select><input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Other color (optional)" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product, color: [...selectedColors, ...(e.target.value ? [e.target.value] : [])].join(", ") }); }} /></label>
         </div>
         <div className="flex flex-wrap gap-6">
           <label className="label cursor-pointer gap-3"><span className="label-text">New product</span><input type="checkbox" className="toggle toggle-primary" checked={product.isNew} onChange={(e) => setProduct({ ...product, isNew: e.target.checked })} /></label>
@@ -346,10 +350,10 @@ const AddNewProduct = () => {
             <select
               className="select select-bordered"
               value={product.quantity > 0 ? 1 : 0}
-              disabled
+              onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) === 0 ? 0 : Math.max(1, product.quantity) })}
             >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
+              <option value={1}>In stock</option>
+              <option value={0}>Out of stock</option>
             </select>
           </label>
         </div>

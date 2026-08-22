@@ -11,6 +11,8 @@ import {
 import apiClient from "@/lib/api";
 import { getProductImageUrl } from "@/lib/product-image";
 
+const COLOR_OPTIONS = ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف", "وردي"];
+
 interface DashboardProductDetailsProps {
   params: Promise<{ id: string }>;
 }
@@ -23,6 +25,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
   const [categories, setCategories] = useState<Category[]>();
   const [otherImages, setOtherImages] = useState<OtherImages[]>([]);
   const [otherColor, setOtherColor] = useState("");
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const router = useRouter();
 
   // functionality for deleting product
@@ -177,7 +180,9 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
       if (!imagesResponse.ok) throw new Error(images.error || "Product images could not be loaded");
       setProduct(productData);
       setOtherImages(Array.isArray(images) ? images : []);
-      setOtherColor(productData.color && !["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"].includes(productData.color) ? productData.color : "");
+      const savedColors = String(productData.color || "").split(",").map((color) => color.trim()).filter(Boolean);
+      setSelectedColors(savedColors.filter((color) => COLOR_OPTIONS.includes(color)));
+      setOtherColor(savedColors.filter((color) => !COLOR_OPTIONS.includes(color)).join(", "));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Product could not be loaded");
     }
@@ -308,11 +313,11 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
             </div>
             <select
               className="select select-bordered"
-              value={Number(product?.quantity ?? 0) > 0 ? 1 : 0}
-              disabled
+              value={Number(product?.quantity ?? 0) > 0 ? "in" : "out"}
+              onChange={(e) => setProduct({ ...product!, quantity: e.target.value === "out" ? 0 : Math.max(1, Number(product?.quantity ?? 0)) })}
             >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
+              <option value="in">In stock</option>
+              <option value="out">Out of stock</option>
             </select>
           </label>
         </div>
@@ -371,11 +376,10 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
           </label>
           <label className="form-control w-full max-w-xs">
             <span className="label-text">Color:</span>
-            <select className="select select-bordered" value={product?.color && ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"].includes(product.color) ? product.color : "other"} onChange={(e) => { const value = e.target.value === "other" ? otherColor : e.target.value; setProduct({ ...product!, color: value }); }}>
-              <option value="">Select color</option>
-              <option>أسود</option><option>أبيض</option><option>أخضر</option><option>أصفر</option><option>أحمر</option><option>أزرق</option><option>رمادي</option><option>شفاف</option><option value="other">Other</option>
+            <select multiple className="select select-bordered h-40" value={selectedColors} onChange={(e) => { const values = Array.from(e.target.selectedOptions, (option) => option.value); setSelectedColors(values); setProduct({ ...product!, color: [...values, ...(otherColor ? [otherColor] : [])].join(", ") }); }}>
+              {COLOR_OPTIONS.map((color) => <option key={color}>{color}</option>)}
             </select>
-            {(!product?.color || !["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"].includes(product.color)) && <input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Custom color" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product!, color: e.target.value }); }} />}
+            <input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Other color (optional)" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product!, color: [...selectedColors, ...(e.target.value ? [e.target.value] : [])].join(", ") }); }} />
           </label>
         </div>
 

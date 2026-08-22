@@ -81,7 +81,7 @@ const ProductImageCarousel = ({
       {images.length > 1 && (
         <div className="flex shrink-0 items-center gap-2 pt-2" aria-label={`${images.length} product photos`}>
           {images.map((image, index) => (
-            <button key={`${image}-${index}`} type="button" aria-label={`Show product photo ${index + 1}`} aria-current={index === currentIndex} onClick={() => setCurrentIndex(index)} className={`h-2 w-2 rounded-full ${index === currentIndex ? "bg-black" : "bg-gray-300"}`} />
+            <span key={`${image}-${index}`} aria-label={`Product photo ${index + 1}`} aria-current={index === currentIndex} className={`h-2 w-2 rounded-full ${index === currentIndex ? "bg-black" : "bg-gray-300"}`} />
           ))}
         </div>
       )}
