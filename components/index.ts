@@ -7,6 +7,7 @@ export { default as CategoryMenu } from "./CategoryMenu";
 export { default as Incentives } from "./Incentives";
 export { default as ProductItem } from "./ProductItem";
 export { default as ProductsSection } from "./ProductsSection";
+export { default as ProductPhotoWidget } from "./ProductPhotoWidget";
 export { default as PromotionWidget } from "./PromotionWidget";
 export { default as Newsletter } from "./Newsletter";
 export { default as Footer } from "./Footer";
