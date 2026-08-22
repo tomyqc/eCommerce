@@ -6,7 +6,6 @@ import {
   SingleProductDynamicFields,
   PaymentLogos,
 } from "@/components";
-import apiClient from "@/lib/api";
 import { notFound } from "next/navigation";
 import React from "react";
 import { FaSquareFacebook } from "react-icons/fa6";
@@ -14,6 +13,7 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaSquarePinterest } from "react-icons/fa6";
 import { sanitize } from "@/lib/sanitize";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
+import prisma from "@/utils/db";
 
 interface SingleProductPageProps {
   params: Promise<{  productSlug: string, id: string }>;
@@ -21,14 +21,14 @@ interface SingleProductPageProps {
 
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const paramsAwaited = await params;
-  // sending API request for a single product with a given product slug
-  const data = await apiClient.get(
-    `/api/slugs/${paramsAwaited?.productSlug}`
-  );
-  const product = await data.json();
+  const productData = await prisma.product.findUnique({
+    where: { slug: paramsAwaited?.productSlug },
+    include: { category: true },
+  });
+  const product = productData ? { ...productData, variantPrices: productData.variantPrices as Product["variantPrices"] } : null;
 
   // sending API request for more than 1 product image if it exists
-  if (!product || product.error) {
+  if (!product) {
     notFound();
   }
 
