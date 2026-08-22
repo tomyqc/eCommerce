@@ -67,17 +67,17 @@ const ProductImageCarousel = ({
         <img
           src={getProductImageUrl(images[currentIndex])}
           alt={`${title} photo ${currentIndex + 1}`}
-          className={imageClassName}
+          className={`${imageClassName} pointer-events-none select-none`}
           onError={(event) => {
             event.currentTarget.src = "/product_placeholder.jpg";
           }}
         />
         {images.length > 1 && (
           <>
-            <button type="button" aria-label="Previous product photo" onMouseDown={(event) => handleArrowPress(event, showPrevious)} onTouchStart={(event) => handleArrowPress(event, showPrevious)} className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Previous product photo" onMouseDown={(event) => handleArrowPress(event, showPrevious)} onTouchStart={(event) => handleArrowPress(event, showPrevious)} className="absolute left-0 top-0 z-20 flex h-full w-1/4 cursor-pointer items-center justify-start touch-manipulation bg-transparent pl-2 text-black/70 hover:bg-black/5 hover:text-black">
               <FaChevronLeft aria-hidden="true" />
             </button>
-            <button type="button" aria-label="Next product photo" onMouseDown={(event) => handleArrowPress(event, showNext)} onTouchStart={(event) => handleArrowPress(event, showNext)} className="absolute right-2 top-1/2 z-20 flex h-10 w-10 cursor-pointer items-center justify-center touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Next product photo" onMouseDown={(event) => handleArrowPress(event, showNext)} onTouchStart={(event) => handleArrowPress(event, showNext)} className="absolute right-0 top-0 z-20 flex h-full w-1/4 cursor-pointer items-center justify-end touch-manipulation bg-transparent pr-2 text-black/70 hover:bg-black/5 hover:text-black">
               <FaChevronRight aria-hidden="true" />
             </button>
           </>
