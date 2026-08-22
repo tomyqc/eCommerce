@@ -55,7 +55,7 @@ const ProductImageCarousel = ({
 
   const showPrevious = () => setCurrentIndex((index) => (index - 1 + images.length) % images.length);
   const showNext = () => setCurrentIndex((index) => (index + 1) % images.length);
-  const handleArrowPress = (event: React.PointerEvent<HTMLButtonElement>, action: () => void) => {
+  const handleArrowPress = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>, action: () => void) => {
     event.preventDefault();
     event.stopPropagation();
     action();
@@ -74,10 +74,10 @@ const ProductImageCarousel = ({
         />
         {images.length > 1 && (
           <>
-            <button type="button" aria-label="Previous product photo" onPointerDown={(event) => handleArrowPress(event, showPrevious)} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Previous product photo" onMouseDown={(event) => handleArrowPress(event, showPrevious)} onTouchStart={(event) => handleArrowPress(event, showPrevious)} className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
               <FaChevronLeft aria-hidden="true" />
             </button>
-            <button type="button" aria-label="Next product photo" onPointerDown={(event) => handleArrowPress(event, showNext)} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Next product photo" onMouseDown={(event) => handleArrowPress(event, showNext)} onTouchStart={(event) => handleArrowPress(event, showNext)} className="absolute right-2 top-1/2 z-20 flex h-10 w-10 cursor-pointer items-center justify-center touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
               <FaChevronRight aria-hidden="true" />
             </button>
           </>
