@@ -23,6 +23,11 @@ model Product {
   description    String
   manufacturer   String
   inStock        Int                      @default(1)
+  quantity       Int                      @default(1)
+  isNew          Boolean                  @default(false)
+  isSold         Boolean                  @default(false)
+  couponCode     String?
+  couponPercent  Int                      @default(0)
   categoryId     String
   category       Category                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   customerOrders customer_order_product[]
