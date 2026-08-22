@@ -2,13 +2,13 @@
 
 import { useProductStore } from "@/app/_zustand/store";
 import toast from "react-hot-toast";
-import Image from "next/image"
 import Link from "next/link";
 import { FaCheck, FaCircleQuestion, FaClock, FaXmark } from "react-icons/fa6";
 import QuantityInputCart from "@/components/QuantityInputCart";
 import { sanitize } from "@/lib/sanitize";
 import { formatDZD } from "@/lib/currency";
-import { getProductImageUrl } from "@/lib/product-image";
+import ProductImageCarousel from "@/components/ProductImageCarousel";
+import DiscountedPrice from "@/components/DiscountedPrice";
 
 export const CartModule = () => {
 
@@ -34,15 +34,7 @@ export const CartModule = () => {
         >
           {products.map((product) => (
             <li key={product.id} className="flex py-6 sm:py-10">
-              <div className="relative flex-shrink-0">
-                <Image
-                  width={192}
-                  height={192}
-                  src={getProductImageUrl(product?.image, product?.inStock, product?.isNew, Boolean(product?.isSold || (product?.couponCode && Number(product?.couponPercent) > 0)))}
-                  alt="laptop image"
-                  className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
-                />
-              </div>
+              <ProductImageCarousel productId={product.productId || product.id} mainImage={product.image} title={product.title} className="h-24 w-24 flex-shrink-0 sm:h-48 sm:w-48" imageClassName="h-full w-full rounded-md object-contain" />
 
               <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
                 <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
@@ -57,15 +49,11 @@ export const CartModule = () => {
                         </Link>
                       </h3>
                     </div>
-                    {/* <div className="mt-1 flex text-sm">
-                        <p className="text-gray-500">{product.color}</p>
-                        {product.size ? (
-                          <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">{product.size}</p>
-                        ) : null}
-                      </div> */}
-                    <p className="mt-1 text-sm font-medium text-gray-900">
-                      {formatDZD(product.price)}
-                    </p>
+                    <div className="mt-1 flex flex-wrap gap-x-3 text-sm text-gray-500">
+                      {product.color && <span>{product.color}</span>}
+                      {product.size && <span>{product.size}</span>}
+                    </div>
+                    <DiscountedPrice price={product.price} couponPercent={product.couponPercent} className="mt-1 text-sm font-medium text-gray-900" />
                   </div>
 
                   <div className="mt-4 sm:mt-0 sm:pr-9">

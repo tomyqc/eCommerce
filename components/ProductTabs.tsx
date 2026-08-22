@@ -76,6 +76,10 @@ const ProductTabs = ({ product }: { product: Product }) => {
                     <th>Size:</th>
                     <td>{product?.size ? sanitize(product.size) : "Not specified"}</td>
                 </tr>
+                  <tr>
+                    <th>Discount:</th>
+                    <td>{product?.couponPercent ? `${product.couponPercent}%` : "No discount"}</td>
+                  </tr>
               </tbody>
             </table>
           </div>

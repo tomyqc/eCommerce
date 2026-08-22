@@ -8,20 +8,13 @@ import {
   DiscountedPrice,
 } from "@/components";
 import apiClient from "@/lib/api";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 import { FaSquareFacebook } from "react-icons/fa6";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaSquarePinterest } from "react-icons/fa6";
 import { sanitize } from "@/lib/sanitize";
-import { getProductImageUrl } from "@/lib/product-image";
-
-interface ImageItem {
-  imageID: string;
-  productID: string;
-  image: string;
-}
+import ProductImageCarousel from "@/components/ProductImageCarousel";
 
 interface SingleProductPageProps {
   params: Promise<{  productSlug: string, id: string }>;
@@ -36,11 +29,6 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const product = await data.json();
 
   // sending API request for more than 1 product image if it exists
-  const imagesData = await apiClient.get(
-    `/api/images/${paramsAwaited?.id}`
-  );
-  const images = await imagesData.json();
-
   if (!product || product.error) {
     notFound();
   }
@@ -50,27 +38,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
       <div className="max-w-screen-2xl mx-auto">
         <div className="flex justify-center gap-x-16 pt-10 max-lg:flex-col items-center gap-y-5 px-5">
           <div>
-            <div className="relative">
-              <Image
-                src={getProductImageUrl(product?.mainImage, product?.inStock, product?.isNew, Boolean(product?.isSold || (product?.couponCode && Number(product?.couponPercent) > 0)))}
-                width={500}
-                height={500}
-                alt="main image"
-                className="w-auto h-auto"
-              />
-            </div>
-            <div className="flex justify-around mt-5 flex-wrap gap-y-1 max-[500px]:justify-center max-[500px]:gap-x-1">
-              {images?.map((imageItem: ImageItem, key: number) => (
-                 <Image
-                  key={imageItem.imageID + key}
-                  src={getProductImageUrl(imageItem.image)}
-                  width={100}
-                  height={100}
-                  alt="laptop image"
-                  className="w-auto h-auto"
-                />
-              ))}
-            </div>
+            <ProductImageCarousel productId={product?.id} mainImage={product?.mainImage} title={product?.title} className="h-[540px] w-[500px] max-w-full" />
           </div>
           <div className="flex flex-col gap-y-7 text-black max-[500px]:text-center">
         

@@ -2,6 +2,14 @@ import config from './config';
 
 const getProductImagePath = (image?: string) => {
   if (!image) return "/product_placeholder.jpg";
+  try {
+    const parsedImage = new URL(image);
+    if (parsedImage.pathname.startsWith("/media/")) {
+      return `/${decodeURIComponent(parsedImage.pathname.slice("/media/".length))}`;
+    }
+  } catch {
+    // Keep relative image values unchanged.
+  }
   return image.startsWith("http") || image.startsWith("/")
     ? image
     : `/${image}`;

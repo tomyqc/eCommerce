@@ -6,12 +6,15 @@ export type ProductInCart = {
   title: string;
   price: number;
   image: string;
+  size?: string | null;
+  color?: string | null;
   amount: number;
   inStock: number;
   couponCode?: string | null;
   couponPercent?: number;
   isNew?: boolean;
   isSold?: boolean;
+  productId?: string;
 };
 
 export type State = {

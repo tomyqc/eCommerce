@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import apiClient from "@/lib/api";
 import { formatDZD } from "@/lib/currency";
-import { getProductImageUrl } from "@/lib/product-image";
+import ProductImageCarousel from "@/components/ProductImageCarousel";
 
 const algerianWilayas = [
   ["01", "Adrar"], ["02", "Chlef"], ["03", "Laghouat"], ["04", "Oum El Bouaghi"],
@@ -388,18 +388,12 @@ const CheckoutPage = () => {
             >
               {products.map((product) => (
                 <li key={product?.id} className="flex items-start space-x-4 py-6">
-                  <div className="relative h-20 w-20 flex-none">
-                    <Image
-                      src={getProductImageUrl(product?.image, product?.inStock, product?.isNew, Boolean(product?.isSold || (product?.couponCode && Number(product?.couponPercent) > 0)))}
-                      alt={product?.title}
-                      width={80}
-                      height={80}
-                      className="h-20 w-20 rounded-md object-cover object-center"
-                    />
-                  </div>
+                  <ProductImageCarousel productId={product.productId || product.id} mainImage={product.image} title={product.title} className="h-20 w-20 flex-none" imageClassName="h-full w-full rounded-md object-contain" />
                   <div className="flex-auto space-y-1">
                     <h3>{product?.title}</h3>
                     <p className="text-gray-500">x{product?.amount}</p>
+                    {(product?.color || product?.size) && <p className="text-gray-500">{[product.color, product.size].filter(Boolean).join(" / ")}</p>}
+                    {product?.couponPercent ? <p className="text-green-700">-{product.couponPercent}%</p> : null}
                   </div>
                     <p className="flex-none text-base font-medium">
                       {formatDZD(product?.price)}
