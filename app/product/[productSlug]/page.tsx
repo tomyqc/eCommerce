@@ -5,12 +5,10 @@ import {
   ProductTabs,
   SingleProductDynamicFields,
   PaymentLogos,
+  ProductShareButtons,
 } from "@/components";
 import { notFound } from "next/navigation";
 import React from "react";
-import { FaSquareFacebook } from "react-icons/fa6";
-import { FaSquareXTwitter } from "react-icons/fa6";
-import { FaSquarePinterest } from "react-icons/fa6";
 import { sanitize } from "@/lib/sanitize";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import prisma from "@/utils/db";
@@ -56,11 +54,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
               </p>
               <div className="text-lg flex gap-x-2">
                 <span>Share:</span>
-                <div className="flex items-center gap-x-1 text-2xl">
-                  <FaSquareFacebook />
-                  <FaSquareXTwitter />
-                  <FaSquarePinterest />
-                </div>
+                <ProductShareButtons title={product.title} />
               </div>
               <PaymentLogos />
             </div>

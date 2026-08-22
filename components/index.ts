@@ -33,6 +33,7 @@ export { default as AddToCartSingleProductBtn } from "./AddToCartSingleProductBt
 export { default as BuyNowSingleProductBtn } from "./BuyNowSingleProductBtn";
 export { default as SingleProductDynamicFields } from "./SingleProductDynamicFields";
 export { default as VariantPriceEditor } from "./VariantPriceEditor";
+export { default as ProductShareButtons } from "./ProductShareButtons";
 export { default as CartElement } from "./CartElement";
 export { default as PaymentLogos } from "./PaymentLogos";
 

@@ -14,6 +14,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Aiden Store",
   description: "Professional Dental & Cosmetic Supplies.",
+  icons: {
+    icon: "/WebIcon.png",
+    shortcut: "/WebIcon.png",
+    apple: "/WebIcon.png",
+  },
 };
 
 export default async function RootLayout({
