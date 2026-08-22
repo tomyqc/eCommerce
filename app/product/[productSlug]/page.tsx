@@ -5,7 +5,6 @@ import {
   ProductTabs,
   SingleProductDynamicFields,
   PaymentLogos,
-  DiscountedPrice,
 } from "@/components";
 import apiClient from "@/lib/api";
 import { notFound } from "next/navigation";
@@ -47,7 +46,6 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
               {product?.isNew && <span className="bg-blue-100 px-2 py-1 text-xs font-bold text-blue-700">NEW</span>}
               {product?.isSold && <span className="bg-red-100 px-2 py-1 text-xs font-bold text-red-700">PROMO</span>}
             </div>
-            <DiscountedPrice price={product?.price} couponPercent={product?.couponPercent} className="text-xl font-semibold" />
             {product?.couponCode && Number(product?.couponPercent) > 0 && <p className="w-fit bg-green-100 px-3 py-1 text-sm font-semibold text-green-700 max-[500px]:mx-auto">Coupon {product.couponCode}: -{product.couponPercent}%</p>}
             <StockAvailabillity stock={94} inStock={product?.inStock} />
             <SingleProductDynamicFields product={product} />

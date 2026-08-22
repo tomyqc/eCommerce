@@ -14,6 +14,8 @@ import QuantityInput from "./QuantityInput";
 import AddToCartSingleProductBtn from "./AddToCartSingleProductBtn";
 import BuyNowSingleProductBtn from "./BuyNowSingleProductBtn";
 import { parseOptions } from "@/lib/product-variants";
+import { getVariantPrice } from "@/lib/product-variants";
+import DiscountedPrice from "./DiscountedPrice";
 
 const SingleProductDynamicFields = ({ product }: { product: Product }) => {
   const [quantityCount, setQuantityCount] = useState<number>(1);
@@ -21,8 +23,10 @@ const SingleProductDynamicFields = ({ product }: { product: Product }) => {
   const colors = parseOptions(product.color);
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
   const [selectedColor, setSelectedColor] = useState(colors[0] || "");
+  const selectedPrice = getVariantPrice(product.price, selectedSize, product.variantPrices);
   return (
     <>
+      <DiscountedPrice price={selectedPrice} couponPercent={product.couponPercent} className="text-xl font-semibold" />
       <QuantityInput
         quantityCount={quantityCount}
         setQuantityCount={setQuantityCount}

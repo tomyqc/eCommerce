@@ -108,7 +108,10 @@ export const useProductStore = create<State & Actions>()(
             });
           }
 
-          return { products: [...state.products] };
+          return {
+            products: [...state.products],
+            total: state.products.reduce((sum, product) => sum + product.price * product.amount, 0),
+          };
         });
       },
       updateCartVariant: (id, size, color, price) => {
