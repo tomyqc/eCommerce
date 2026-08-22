@@ -12,9 +12,9 @@ import React from "react";
 import Link from "next/link";
 
 import { sanitize } from "@/lib/sanitize";
-import { getProductImageUrl } from "@/lib/product-image";
 import { FaStar } from "react-icons/fa6";
 import DiscountedPrice from "@/components/DiscountedPrice";
+import ProductImageCarousel from "@/components/ProductImageCarousel";
 
 const ProductItem = ({
   product,
@@ -25,16 +25,13 @@ const ProductItem = ({
 }) => {
   return (
     <div className="flex min-w-0 w-full flex-col items-center gap-y-1 text-center">
-      <Link
-        href={`/product/${product.slug}`}
-        className="relative flex aspect-square w-full items-center justify-center overflow-hidden"
-      >
-        <img
-          src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && product.couponPercent > 0)))}
-          className="h-full w-full object-contain [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
-          alt={sanitize(product?.title) || "Product image"}
-        />
-      </Link>
+      <ProductImageCarousel
+        productId={product.id}
+        mainImage={product.mainImage}
+        title={sanitize(product?.title) || "Product image"}
+        className="h-56 w-full"
+        imageClassName="h-full w-full object-contain [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
+      />
       <Link
         href={`/product/${product.slug}`}
         className={
