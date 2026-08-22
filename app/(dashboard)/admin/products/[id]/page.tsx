@@ -376,9 +376,9 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
           </label>
           <label className="form-control w-full max-w-xs">
             <span className="label-text">Color:</span>
-            <select multiple className="select select-bordered h-40" value={selectedColors} onChange={(e) => { const values = Array.from(e.target.selectedOptions, (option) => option.value); setSelectedColors(values); setProduct({ ...product!, color: [...values, ...(otherColor ? [otherColor] : [])].join(", ") }); }}>
-              {COLOR_OPTIONS.map((color) => <option key={color}>{color}</option>)}
-            </select>
+            <div className="grid grid-cols-2 gap-2 rounded border border-gray-300 p-3">
+              {COLOR_OPTIONS.map((color) => <label key={color} className="flex items-center gap-2"><input type="checkbox" className="checkbox checkbox-sm" checked={selectedColors.includes(color)} onChange={(e) => { const values = e.target.checked ? [...selectedColors, color] : selectedColors.filter((item) => item !== color); setSelectedColors(values); setProduct({ ...product!, color: [...values, ...(otherColor ? [otherColor] : [])].join(", ") }); }} /><span>{color}</span></label>)}
+            </div>
             <input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Other color (optional)" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product!, color: [...selectedColors, ...(e.target.value ? [e.target.value] : [])].join(", ") }); }} />
           </label>
         </div>
