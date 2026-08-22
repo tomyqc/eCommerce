@@ -1,5 +1,4 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import { Account, User as AuthUser } from "next-auth";
+import NextAuth from "next-auth/next";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -7,7 +6,7 @@ import bcrypt from "bcryptjs";
 import prisma from "@/utils/db";
 import { nanoid } from "nanoid";
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
@@ -54,7 +53,7 @@ export const authOptions: NextAuthOptions = {
     // }),
   ],
   callbacks: {
-    async signIn({ user, account }: { user: AuthUser; account: Account }) {
+    async signIn({ user, account }: any) {
       if (account?.provider === "credentials") {
         return true;
       }
@@ -90,7 +89,7 @@ export const authOptions: NextAuthOptions = {
       
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.role = user.role;
         token.id = user.id;
@@ -109,7 +108,7 @@ export const authOptions: NextAuthOptions = {
       
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (token) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
@@ -122,7 +121,7 @@ export const authOptions: NextAuthOptions = {
     error: '/login', // Redirect to login page on auth errors
   },
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
     maxAge: 15 * 60, // 15 minutes in seconds
     updateAge: 5 * 60, // Update session every 5 minutes
   },
