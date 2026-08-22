@@ -8,7 +8,6 @@
 // Output: Product item component that contains product image, title, link to the single product page, price, button...
 // *********************
 
-import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 
@@ -30,11 +29,9 @@ const ProductItem = ({
         href={`/product/${product.slug}`}
         className="relative flex aspect-square w-full items-center justify-center overflow-hidden"
       >
-        <Image
+        <img
           src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && product.couponPercent > 0)))}
-          fill
-          sizes="(max-width: 1024px) 20vw, 220px"
-          className="object-contain [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
+          className="h-full w-full object-contain [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
           alt={sanitize(product?.title) || "Product image"}
         />
       </Link>

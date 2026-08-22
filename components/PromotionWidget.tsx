@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import apiClient from "@/lib/api";
 import Heading from "@/components/Heading";
@@ -41,7 +40,7 @@ const PromotionWidget = () => {
             return (
             <Link key={`${product.id}-${productIndex}`} href={`/product/${product.slug}`} className="flex h-full w-[20vw] min-w-[20vw] shrink-0 flex-col items-center justify-center px-5 py-5 max-md:w-[50vw] max-md:min-w-[50vw]">
               <div className="relative h-[78%] w-full">
-                <Image src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && product.couponPercent > 0)))} alt={product.title} fill sizes="20vw" className="object-contain" />
+                <img src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && product.couponPercent > 0)))} alt={product.title} className="h-full w-full object-contain" />
               </div>
             </Link>
             );
