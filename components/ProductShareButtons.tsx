@@ -1,13 +1,15 @@
 "use client";
 
 import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 
 type ProductShareButtonsProps = {
   title: string;
 };
 
 const ProductShareButtons = ({ title }: ProductShareButtonsProps) => {
-  const shareUrl = typeof window === "undefined" ? "" : window.location.href;
+  const [shareUrl, setShareUrl] = useState("");
+  useEffect(() => setShareUrl(window.location.href), []);
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
   const links = [
