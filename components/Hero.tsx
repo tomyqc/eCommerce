@@ -9,7 +9,6 @@
 // *********************
 
 import React from "react";
-import ProductPhotoWidget from "./ProductPhotoWidget";
 
 const Hero = () => {
   return (
@@ -41,7 +40,6 @@ const Hero = () => {
           </p>
         </div>
         </div>
-        <ProductPhotoWidget />
       </div>
     </div>
   );
