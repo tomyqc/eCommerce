@@ -69,10 +69,10 @@ const ProductImageCarousel = ({
         />
         {images.length > 1 && (
           <>
-            <button type="button" aria-label="Previous product photo" onClick={showPrevious} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Previous product photo" onClick={(event) => { event.preventDefault(); event.stopPropagation(); showPrevious(); }} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
               <FaChevronLeft aria-hidden="true" />
             </button>
-            <button type="button" aria-label="Next product photo" onClick={showNext} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Next product photo" onClick={(event) => { event.preventDefault(); event.stopPropagation(); showNext(); }} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
               <FaChevronRight aria-hidden="true" />
             </button>
           </>
