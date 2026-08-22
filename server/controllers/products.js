@@ -73,7 +73,7 @@ const getAllProducts = asyncHandler(async (request, response) => {
   const mode = request.query.mode || "";
   
   // checking if we are on the admin products page because we don't want to have filtering, sorting and pagination there
-  if(mode === "admin"){
+  if(mode === "admin" || mode === "home"){
     const adminProducts = await prisma.product.findMany({});
     return response.json(adminProducts);
   } else {

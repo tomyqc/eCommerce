@@ -48,6 +48,8 @@ const {
 
 const app = express();
 
+app.use('/media', express.static(path.join(__dirname, '..', 'public')));
+
 // Trust proxy for accurate IP addresses
 app.set('trust proxy', 1);
 

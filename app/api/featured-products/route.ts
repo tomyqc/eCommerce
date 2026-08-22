@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const response = await fetch(`${config.apiBaseUrl}/api/products`, { cache: "no-store" });
+    const response = await fetch(`${config.apiBaseUrl}/api/products?mode=home`, { cache: "no-store" });
     if (!response.ok) {
       return NextResponse.json({ error: "Products could not be loaded" }, { status: response.status });
     }

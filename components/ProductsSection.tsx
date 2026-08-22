@@ -18,7 +18,7 @@ const ProductsSection = async () => {
   
   try {
     // sending API request for getting all products
-    const data = await apiClient.get("/api/products", { cache: "no-store" });
+    const data = await apiClient.get("/api/products?mode=home", { cache: "no-store" });
     
     if (!data.ok) {
       console.error('Failed to fetch products:', data.statusText);

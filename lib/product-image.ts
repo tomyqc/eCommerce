@@ -1,6 +1,10 @@
+import config from './config';
+
 const getProductImagePath = (image?: string) => {
   if (!image) return "/product_placeholder.jpg";
-  return image.startsWith("http") || image.startsWith("/") ? image : `/${image}`;
+  return image.startsWith("http") || image.startsWith("/")
+    ? image
+    : `${config.apiBaseUrl}/media/${encodeURIComponent(image)}`;
 };
 
 export const getProductImageUrl = (image?: string, inStock?: number, isNew?: boolean, isPromo?: boolean) => {

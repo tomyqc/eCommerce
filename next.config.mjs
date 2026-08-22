@@ -8,6 +8,11 @@ const nextConfig = {
             hostname: 'placehold.co',
             port: ""
           },
+          {
+            protocol: 'https',
+            hostname: 'ecommerce-5o5g.onrender.com',
+            port: ""
+          },
         ],
       },
     env: {
