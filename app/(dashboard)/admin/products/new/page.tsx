@@ -52,16 +52,14 @@ const AddNewProduct = () => {
       categoryId: product.categoryId.trim(),
     };
 
-    if (
-      !requiredFields.merchantId ||
-      !requiredFields.title ||
-      !requiredFields.manufacturer ||
-      !requiredFields.description ||
-      !requiredFields.slug ||
-      !requiredFields.categoryId ||
-      product.price <= 0
-    ) {
-      toast.error("Please enter values in input fields");
+    const missingField = Object.entries(requiredFields).find(([, value]) => !value)?.[0];
+    if (missingField) {
+      toast.error(`Please enter a ${missingField}`);
+      return;
+    }
+
+    if (!Number.isFinite(product.price) || product.price <= 0) {
+      toast.error("Please enter a valid product price");
       return;
     }
 
