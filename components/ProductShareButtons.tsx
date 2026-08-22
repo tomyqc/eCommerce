@@ -9,7 +9,7 @@ type ProductShareButtonsProps = {
 
 const ProductShareButtons = ({ title }: ProductShareButtonsProps) => {
   const [shareUrl, setShareUrl] = useState("");
-  useEffect(() => setShareUrl(window.location.href), []);
+  useEffect(() => setShareUrl(`${window.location.origin}${window.location.pathname}`), []);
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
   const links = [
