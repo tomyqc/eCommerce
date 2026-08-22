@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
-import config from "@/lib/config";
+import prisma from "@/utils/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const response = await fetch(`${config.apiBaseUrl}/api/products?mode=home`, { cache: "no-store" });
-    if (!response.ok) {
-      return NextResponse.json({ error: "Products could not be loaded" }, { status: response.status });
-    }
-
-    return NextResponse.json(await response.json());
+    const products = await prisma.product.findMany({ include: { category: { select: { name: true } } } });
+    return NextResponse.json(products);
   } catch {
     return NextResponse.json({ error: "Product service is unavailable" }, { status: 503 });
   }

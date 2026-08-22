@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import apiClient from "@/lib/api";
 import { getProductImageUrl } from "@/lib/product-image";
 
 type ProductImageCarouselProps = {
@@ -34,7 +33,7 @@ const ProductImageCarousel = ({
 
     if (!productId) return;
     let active = true;
-    apiClient.get(`/api/images/${productId}`, { cache: "no-store" }).then(async (response) => {
+    fetch(`/api/images/${productId}`, { cache: "no-store" }).then(async (response) => {
       if (!response.ok) return;
       const relatedImages: ProductImage[] = await response.json();
       if (!active) return;
