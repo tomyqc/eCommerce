@@ -7,6 +7,8 @@ interface Product {
   description: string;
   mainImage: string;
   manufacturer: string;
+  size?: string | null;
+  color?: string | null;
   categoryId: string;
   merchantId: string;
   category: {name: string}?;
@@ -47,8 +49,8 @@ type ProductInWishlist = {
 };
 
 interface OtherImages {
-  imageID: number;
-  productID: number;
+  imageID: string;
+  productID: string;
   image: string;
 }
 

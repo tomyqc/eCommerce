@@ -70,7 +70,11 @@ const ProductTabs = ({ product }: { product: Product }) => {
                 {/* row 3 */}
                 <tr>
                   <th>Color:</th>
-                  <td>Silver, LightSlateGray, Blue</td>
+                   <td>{product?.color ? sanitize(product.color) : "Not specified"}</td>
+                  </tr>
+                  <tr>
+                    <th>Size:</th>
+                    <td>{product?.size ? sanitize(product.size) : "Not specified"}</td>
                 </tr>
               </tbody>
             </table>

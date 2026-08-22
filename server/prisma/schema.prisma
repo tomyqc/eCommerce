@@ -22,6 +22,8 @@ model Product {
   rating         Int                      @default(0)
   description    String
   manufacturer   String
+  size           String?
+  color          String?
   inStock        Int                      @default(1)
   quantity       Int                      @default(1)
   isNew          Boolean                  @default(false)

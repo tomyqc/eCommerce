@@ -22,6 +22,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
   const [product, setProduct] = useState<Product>();
   const [categories, setCategories] = useState<Category[]>();
   const [otherImages, setOtherImages] = useState<OtherImages[]>([]);
+  const [otherColor, setOtherColor] = useState("");
   const router = useRouter();
 
   // functionality for deleting product
@@ -71,6 +72,8 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         slug: product.slug.trim(),
         price: Number(product.price),
         manufacturer: product.manufacturer.trim(),
+        size: product.size?.trim() || null,
+        color: product.color?.trim() || null,
         description: product.description.trim(),
         categoryId: product.categoryId,
         mainImage: product.mainImage,
@@ -122,6 +125,45 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
     }
   };
 
+  const uploadAdditionalImage = async (file: File) => {
+    if (otherImages.length >= 4) {
+      toast.error("A product can have a maximum of 5 photos including its main photo");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("uploadedFile", file);
+    const uploadResponse = await apiClient.post("/api/main-image", formData);
+    if (!uploadResponse.ok) throw new Error("Photo upload unsuccessful");
+    const { fileName } = await uploadResponse.json();
+    const image = `${apiClient.baseUrl}/media/${fileName}`;
+    const createResponse = await apiClient.post("/api/images", { productID: id, image });
+    if (!createResponse.ok) {
+      const error = await createResponse.json();
+      throw new Error(error.error || "Photo could not be added");
+    }
+    const createdImage = await createResponse.json();
+    setOtherImages((current) => [...current, createdImage]);
+  };
+
+  const replaceAdditionalImage = async (imageID: string, file: File) => {
+    const formData = new FormData();
+    formData.append("uploadedFile", file);
+    const uploadResponse = await apiClient.post("/api/main-image", formData);
+    if (!uploadResponse.ok) throw new Error("Photo upload unsuccessful");
+    const { fileName } = await uploadResponse.json();
+    const image = `${apiClient.baseUrl}/media/${fileName}`;
+    const response = await apiClient.put(`/api/images/photo/${imageID}`, { image });
+    if (!response.ok) throw new Error("Photo could not be replaced");
+    const updated = await response.json();
+    setOtherImages((current) => current.map((item) => item.imageID === imageID ? updated : item));
+  };
+
+  const removeAdditionalImage = async (imageID: string) => {
+    const response = await apiClient.delete(`/api/images/photo/${imageID}`);
+    if (!response.ok) throw new Error("Photo could not be deleted");
+    setOtherImages((current) => current.filter((item) => item.imageID !== imageID));
+  };
+
   // fetching main product data including other product images
   const fetchProductData = async () => {
     try {
@@ -135,6 +177,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
       if (!imagesResponse.ok) throw new Error(images.error || "Product images could not be loaded");
       setProduct(productData);
       setOtherImages(Array.isArray(images) ? images : []);
+      setOtherColor(productData.color && !["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"].includes(productData.color) ? productData.color : "");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Product could not be loaded");
     }
@@ -321,6 +364,21 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         </div>
         {/* Product category select input div - end */}
 
+        <div className="flex flex-wrap gap-4">
+          <label className="form-control w-full max-w-xs">
+            <span className="label-text">Size:</span>
+            <input type="text" className="input input-bordered" value={product?.size || ""} placeholder="S, XL, 1000 g, 2 kg" onChange={(e) => setProduct({ ...product!, size: e.target.value })} />
+          </label>
+          <label className="form-control w-full max-w-xs">
+            <span className="label-text">Color:</span>
+            <select className="select select-bordered" value={product?.color && ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"].includes(product.color) ? product.color : "other"} onChange={(e) => { const value = e.target.value === "other" ? otherColor : e.target.value; setProduct({ ...product!, color: value }); }}>
+              <option value="">Select color</option>
+              <option>أسود</option><option>أبيض</option><option>أخضر</option><option>أصفر</option><option>أحمر</option><option>أزرق</option><option>رمادي</option><option>شفاف</option><option value="other">Other</option>
+            </select>
+            {(!product?.color || !["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"].includes(product.color)) && <input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Custom color" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product!, color: e.target.value }); }} />}
+          </label>
+        </div>
+
         {/* Main image file upload div - start */}
         <div>
           <input
@@ -349,18 +407,19 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         </div>
         {/* Main image file upload div - end */}
         {/* Other images file upload div - start */}
-        <div className="flex gap-x-1">
+        <div>
+          <div className="flex flex-wrap gap-3">
           {otherImages &&
             otherImages.map((image) => (
-              <Image
-                src={`/${image.image}`}
-                key={image.imageID}
-                alt="product image"
-                width={100}
-                height={100}
-                className="w-auto h-auto"
-              />
+              <div key={image.imageID} className="flex flex-col gap-2">
+                <Image src={getProductImageUrl(image.image)} alt="product image" width={100} height={100} className="h-24 w-24 object-contain" />
+                <label className="btn btn-sm">Replace<input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && replaceAdditionalImage(image.imageID, e.target.files[0]).catch((error) => toast.error(error.message))} /></label>
+                <button type="button" className="btn btn-error btn-sm text-white" onClick={() => removeAdditionalImage(image.imageID).catch((error) => toast.error(error.message))}>Delete</button>
+              </div>
             ))}
+          </div>
+          {otherImages.length < 4 && <label className="btn btn-outline mt-3">Add photo<input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadAdditionalImage(e.target.files[0]).catch((error) => toast.error(error.message))} /></label>}
+          <p className="mt-2 text-sm text-gray-600">{otherImages.length + (product?.mainImage ? 1 : 0)}/5 photos</p>
         </div>
         {/* Other images file upload div - end */}
         {/* Product description div - start */}

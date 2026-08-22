@@ -61,9 +61,9 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
             </div>
             <div className="flex justify-around mt-5 flex-wrap gap-y-1 max-[500px]:justify-center max-[500px]:gap-x-1">
               {images?.map((imageItem: ImageItem, key: number) => (
-                <Image
+                 <Image
                   key={imageItem.imageID + key}
-                  src={`/${imageItem.image}`}
+                  src={getProductImageUrl(imageItem.image)}
                   width={100}
                   height={100}
                   alt="laptop image"

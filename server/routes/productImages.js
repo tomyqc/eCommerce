@@ -13,10 +13,8 @@ router.route('/:id').get(getSingleProductImages);
 
 router.route('/').post(createImage);
 
+router.route('/photo/:imageID').put(updateImage);
 
-router.route('/:id').put(updateImage);
-
-
-router.route('/:id').delete(deleteImage);
+router.route('/photo/:imageID').delete(deleteImage);
 
 module.exports = router

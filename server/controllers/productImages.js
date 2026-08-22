@@ -15,6 +15,10 @@ async function getSingleProductImages(request, response) {
 async function createImage(request, response) {
   try {
     const { productID, image } = request.body;
+    const imageCount = await prisma.image.count({ where: { productID } });
+    if (imageCount >= 4) {
+      return response.status(409).json({ error: "A product can have a maximum of 5 photos including its main photo" });
+    }
     const createImage = await prisma.image.create({
       data: {
         productID,
@@ -30,21 +34,15 @@ async function createImage(request, response) {
 
 async function updateImage(request, response) {
   try {
-    const { id } = request.params; // Getting product id from params
-    const { productID, image } = request.body;
-
-    // Checking whether photo exists for the given product id
-    const existingImage = await prisma.image.findFirst({
-      where: {
-        productID: id, // Finding photo with a product id
-      },
-    });
+    const { imageID } = request.params;
+    const { image } = request.body;
+    const existingImage = await prisma.image.findUnique({ where: { imageID } });
 
     // if photo doesn't exist, return coresponding status code
     if (!existingImage) {
       return response
         .status(404)
-        .json({ error: "Image not found for the provided productID" });
+        .json({ error: "Image not found" });
     }
 
     // Updating photo using coresponding imageID
@@ -53,7 +51,6 @@ async function updateImage(request, response) {
         imageID: existingImage.imageID, // Using imageID of the found existing image
       },
       data: {
-        productID: productID,
         image: image,
       },
     });
@@ -67,12 +64,8 @@ async function updateImage(request, response) {
 
 async function deleteImage(request, response) {
   try {
-    const { id } = request.params;
-    await prisma.image.deleteMany({
-      where: {
-        productID: String(id), // Converting id to string
-      },
-    });
+    const { imageID } = request.params;
+    await prisma.image.delete({ where: { imageID } });
     return response.status(204).send();
   } catch (error) {
     console.error("Error deleting image:", error);

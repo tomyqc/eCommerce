@@ -14,6 +14,8 @@ const AddNewProduct = () => {
     title: string;
     price: number;
     manufacturer: string;
+    size: string;
+    color: string;
     inStock: number;
     quantity: number;
     isNew: boolean;
@@ -29,6 +31,8 @@ const AddNewProduct = () => {
     title: "",
     price: 0,
     manufacturer: "",
+    size: "",
+    color: "",
     inStock: 1,
     quantity: 1,
     isNew: false,
@@ -40,6 +44,9 @@ const AddNewProduct = () => {
     slug: "",
     categoryId: "",
   });
+  const [otherColor, setOtherColor] = useState("");
+  const [additionalImages, setAdditionalImages] = useState<string[]>([]);
+  const colors = ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف"];
   const [categories, setCategories] = useState<Category[]>([]);
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const addProduct = async () => {
@@ -77,6 +84,9 @@ const AddNewProduct = () => {
 
       if (response.status === 201) {
         const data = await response.json();
+        for (const image of additionalImages) {
+          await apiClient.post("/api/images", { productID: data.id, image });
+        }
         console.log("Product created successfully:", data);
         toast.success("Product added successfully");
         setProduct((currentProduct) => ({
@@ -89,7 +99,10 @@ const AddNewProduct = () => {
           description: "",
           slug: "",
           categoryId: categories[0]?.id || "",
+          size: "",
+          color: "",
         }));
+        setAdditionalImages([]);
       } else {
         const errorData = await response.json();
         console.error("Failed to create product:", errorData);
@@ -126,7 +139,7 @@ const AddNewProduct = () => {
         const result = await response.json();
         setProduct((currentProduct) => ({
           ...currentProduct,
-          mainImage: result.fileName || file.name,
+          mainImage: result.fileName ? `${apiClient.baseUrl}/media/${result.fileName}` : file.name,
         }));
       } else {
         const errorData = await response.json();
@@ -136,6 +149,19 @@ const AddNewProduct = () => {
       console.error("Error happend while sending request:", error);
       toast.error("There was an error during file upload");
     }
+  };
+
+  const uploadAdditionalImage = async (file: File) => {
+    if (additionalImages.length + (product.mainImage ? 1 : 0) >= 5) {
+      toast.error("A product can have a maximum of 5 photos including its main photo");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("uploadedFile", file);
+    const response = await apiClient.post("/api/main-image", formData);
+    if (!response.ok) throw new Error("Photo upload unsuccessful");
+    const { fileName } = await response.json();
+    setAdditionalImages((current) => [...current, `${apiClient.baseUrl}/media/${fileName}`]);
   };
 
   const fetchCategories = async () => {
@@ -187,6 +213,11 @@ const AddNewProduct = () => {
               </span>
             )}
           </label>
+        </div>
+
+        <div className="flex flex-wrap gap-4">
+          <label className="form-control w-full max-w-xs"><span className="label-text">Size:</span><input type="text" className="input input-bordered" value={product.size} placeholder="S, XL, 1000 g, 2 kg" onChange={(e) => setProduct({ ...product, size: e.target.value })} /></label>
+          <label className="form-control w-full max-w-xs"><span className="label-text">Color:</span><select className="select select-bordered" value={colors.includes(product.color) ? product.color : product.color ? "other" : ""} onChange={(e) => setProduct({ ...product, color: e.target.value === "other" ? otherColor : e.target.value })}><option value="">Select color</option>{colors.map((color) => <option key={color}>{color}</option>)}<option value="other">Other</option></select>{(!product.color || !colors.includes(product.color)) && <input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Custom color" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product, color: e.target.value }); }} />}</label>
         </div>
         <div className="flex flex-wrap gap-6">
           <label className="label cursor-pointer gap-3"><span className="label-text">New product</span><input type="checkbox" className="toggle toggle-primary" checked={product.isNew} onChange={(e) => setProduct({ ...product, isNew: e.target.checked })} /></label>
@@ -343,6 +374,11 @@ const AddNewProduct = () => {
               />
             </div>
           )}
+          <div className="mt-3 flex flex-wrap gap-3">
+            {additionalImages.map((image, index) => <div key={`${image}-${index}`}><Image src={image} alt={`product photo ${index + 2}`} width={100} height={100} className="h-24 w-24 object-contain" /></div>)}
+          </div>
+          {additionalImages.length + (product.mainImage ? 1 : 0) < 5 && <label className="btn btn-outline mt-3">Add photo<input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadAdditionalImage(e.target.files[0]).catch((error) => toast.error(error.message))} /></label>}
+          <p className="mt-2 text-sm text-gray-600">{additionalImages.length + (product.mainImage ? 1 : 0)}/5 photos</p>
         </div>
         <div>
           <label className="form-control">
