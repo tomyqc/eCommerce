@@ -9,11 +9,14 @@ import { sanitize } from "@/lib/sanitize";
 import { formatDZD } from "@/lib/currency";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
 import DiscountedPrice from "@/components/DiscountedPrice";
+import { useEffect, useState } from "react";
 
 export const CartModule = () => {
 
   const { products, removeFromCart, calculateTotals, total } =
     useProductStore();
+  const [shippingCost, setShippingCost] = useState(5);
+  useEffect(() => { fetch("/api/payment-settings", { cache: "no-store" }).then(async (response) => { if (response.ok) setShippingCost((await response.json()).shippingCost ?? 5); }).catch(() => undefined); }, []);
 
   const handleRemoveItem = (id: string) => {
     removeFromCart(id);
@@ -127,14 +130,14 @@ export const CartModule = () => {
                 />
               </a>
             </dt>
-            <dd className="text-sm font-medium text-gray-900">{formatDZD(5)}</dd>
+            <dd className="text-sm font-medium text-gray-900">{formatDZD(shippingCost)}</dd>
           </div>
           <div className="flex items-center justify-between border-t border-gray-200 pt-4">
             <dt className="text-base font-medium text-gray-900">
               المجموع
             </dt>
             <dd className="text-base font-medium text-gray-900">
-              {formatDZD(total === 0 ? 0 : Math.round(total + 5))}
+              {formatDZD(total === 0 ? 0 : Math.round(total + shippingCost))}
             </dd>
           </div>
         </dl>

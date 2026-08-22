@@ -50,7 +50,7 @@ const CheckoutPage = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "" });
+  const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "", shippingCost: 5 });
   const [couponCode, setCouponCode] = useState("");
   const { products, total, clearCart, updateCartVariant } = useProductStore();
   const router = useRouter();
@@ -58,7 +58,7 @@ const CheckoutPage = () => {
   const couponProducts = products.filter((product) => product.couponCode?.toUpperCase() === normalizedCoupon && (product.couponPercent ?? 0) > 0);
   const discount = couponProducts.reduce((amount, product) => amount + product.price * product.amount * ((product.couponPercent ?? 0) / 100), 0);
   const discountedSubtotal = Math.max(0, total - discount);
-  const orderTotal = discountedSubtotal === 0 ? 0 : Math.round(discountedSubtotal + 5);
+  const orderTotal = discountedSubtotal === 0 ? 0 : Math.round(discountedSubtotal + paymentAccounts.shippingCost);
 
   // Add validation functions that match server requirements
   const validateForm = () => {
@@ -425,7 +425,7 @@ const CheckoutPage = () => {
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-gray-600">سعر التوصيل</dt>
-                  <dd>{formatDZD(5)}</dd>
+                  <dd>{formatDZD(paymentAccounts.shippingCost)}</dd>
               </div>
               <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                 <dt className="text-base">المجموع</dt>

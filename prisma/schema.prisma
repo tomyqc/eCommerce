@@ -153,6 +153,7 @@ model PaymentSettings {
   id          String   @id @default("default")
   ccpAccount  String?
   bankAccount String?
+  shippingCost Int      @default(5)
   updatedAt   DateTime @updatedAt
 }
 

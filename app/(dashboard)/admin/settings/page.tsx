@@ -20,7 +20,7 @@ const SettingsPage = () => {
   const [pubs, setPubs] = useState<{ slot: string; name: string; image: string }[]>([]);
   const [pubUploading, setPubUploading] = useState<string | null>(null);
   const [paymentAccountsOpen, setPaymentAccountsOpen] = useState(false);
-  const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "" });
+  const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "", shippingCost: 5 });
 
   const loadPubs = async () => {
     const response = await fetch("/api/pubs", { cache: "no-store" });
@@ -259,6 +259,7 @@ const SettingsPage = () => {
           <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("ccp")}>Delete CCP account</button>
           <label className="form-control"><span className="label-text">Bank account</span><input className="input input-bordered" value={paymentAccounts.bankAccount} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, bankAccount: event.target.value })} placeholder="Bank account / RIB" /></label>
           <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("bank")}>Delete bank account</button>
+          <label className="form-control"><span className="label-text">Shipping price</span><input className="input input-bordered" type="number" min="0" step="1" value={paymentAccounts.shippingCost} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, shippingCost: Math.max(0, Number(event.target.value) || 0) })} placeholder="5" /></label>
           <button type="button" className="btn btn-primary w-fit" onClick={savePaymentAccounts}>Save payment accounts</button>
         </section>}
         <BottomPagesManager />
