@@ -291,6 +291,7 @@ const createProduct = asyncHandler(async (request, response) => {
     manufacturer,
     size,
     color,
+    variantPrices,
     categoryId,
     inStock,
     quantity,
@@ -338,6 +339,7 @@ const createProduct = asyncHandler(async (request, response) => {
       manufacturer,
       size: size ? String(size).trim() : null,
       color: color ? String(color).trim() : null,
+      variantPrices: variantPrices && typeof variantPrices === "object" ? variantPrices : null,
       categoryId,
       inStock: Number(quantity ?? inStock ?? 0) > 0 ? 1 : 0,
       quantity: Math.max(0, Math.floor(Number(quantity ?? (Number(inStock) > 0 ? 1 : 0)))),
@@ -364,6 +366,7 @@ const updateProduct = asyncHandler(async (request, response) => {
     manufacturer,
     size,
     color,
+    variantPrices,
     categoryId,
     inStock,
     quantity,
@@ -400,6 +403,7 @@ const updateProduct = asyncHandler(async (request, response) => {
     manufacturer: manufacturer ?? existingProduct.manufacturer,
     size: size === undefined ? existingProduct.size : (size ? String(size).trim() : null),
     color: color === undefined ? existingProduct.color : (color ? String(color).trim() : null),
+    variantPrices: variantPrices === undefined ? existingProduct.variantPrices : (variantPrices && typeof variantPrices === "object" ? variantPrices : null),
     categoryId: categoryId ?? existingProduct.categoryId,
     quantity: quantity === undefined
       ? (existingProduct.quantity ?? (existingProduct.inStock > 0 ? 1 : 0))

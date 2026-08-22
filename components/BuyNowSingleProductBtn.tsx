@@ -13,10 +13,13 @@ import { useProductStore } from "@/app/_zustand/store";
 import React from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { getVariantPrice } from "@/lib/product-variants";
 
 const BuyNowSingleProductBtn = ({
   product,
   quantityCount,
+  selectedSize,
+  selectedColor,
 }: SingleProductBtnProps) => {
   const router = useRouter();
   const { addToCart, calculateTotals } = useProductStore();
@@ -25,11 +28,11 @@ const BuyNowSingleProductBtn = ({
     addToCart({
       id: product?.id.toString(),
       title: product?.title,
-      price: product?.price,
+      price: getVariantPrice(product?.price, selectedSize, product?.variantPrices),
       image: product?.mainImage,
       productId: product?.id.toString(),
-      size: product?.size,
-      color: product?.color,
+      size: selectedSize || null,
+      color: selectedColor || null,
       amount: quantityCount,
       inStock: product?.inStock,
       couponCode: product?.couponCode,

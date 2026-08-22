@@ -7,6 +7,8 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getProductImageUrl } from "@/lib/product-image";
+import VariantPriceEditor from "@/components/VariantPriceEditor";
+import { VariantPrices } from "@/lib/product-variants";
 
 const COLOR_OPTIONS = ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف", "وردي"];
 
@@ -28,6 +30,7 @@ const AddNewProduct = () => {
     description: string;
     slug: string;
     categoryId: string;
+    variantPrices: VariantPrices;
   }>({
     merchantId: "",
     title: "",
@@ -45,6 +48,7 @@ const AddNewProduct = () => {
     description: "",
     slug: "",
     categoryId: "",
+    variantPrices: {},
   });
   const [otherColor, setOtherColor] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -103,6 +107,7 @@ const AddNewProduct = () => {
           categoryId: categories[0]?.id || "",
           size: "",
           color: "",
+          variantPrices: {},
         }));
         setSelectedColors([]);
         setOtherColor("");
@@ -222,6 +227,7 @@ const AddNewProduct = () => {
         <div className="flex flex-wrap gap-4">
           <label className="form-control w-full max-w-xs"><span className="label-text">Size:</span><input type="text" className="input input-bordered" value={product.size} placeholder="S, XL, 1000 g, 2 kg" onChange={(e) => setProduct({ ...product, size: e.target.value })} /></label>
           <label className="form-control w-full max-w-xs"><span className="label-text">Color (multiple):</span><div className="grid grid-cols-2 gap-2 rounded border border-gray-300 p-3">{COLOR_OPTIONS.map((color) => <label key={color} className="flex items-center gap-2"><input type="checkbox" className="checkbox checkbox-sm" checked={selectedColors.includes(color)} onChange={(e) => { const values = e.target.checked ? [...selectedColors, color] : selectedColors.filter((item) => item !== color); setSelectedColors(values); setProduct({ ...product, color: [...values, ...(otherColor ? [otherColor] : [])].join(", ") }); }} /><span>{color}</span></label>)}</div><input type="text" className="input input-bordered mt-2" value={otherColor} placeholder="Other color (optional)" onChange={(e) => { setOtherColor(e.target.value); setProduct({ ...product, color: [...selectedColors, ...(e.target.value ? [e.target.value] : [])].join(", ") }); }} /></label>
+          <VariantPriceEditor size={product.size} variantPrices={product.variantPrices} onChange={(nextSize, variantPrices) => setProduct({ ...product, size: nextSize, variantPrices })} />
         </div>
         <div className="flex flex-wrap gap-6">
           <label className="label cursor-pointer gap-3"><span className="label-text">New product</span><input type="checkbox" className="toggle toggle-primary" checked={product.isNew} onChange={(e) => setProduct({ ...product, isNew: e.target.checked })} /></label>

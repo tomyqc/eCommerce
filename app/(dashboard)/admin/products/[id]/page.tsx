@@ -1,5 +1,5 @@
 "use client";
-import { CustomButton, DashboardSidebar, SectionTitle } from "@/components";
+import { CustomButton, DashboardSidebar, SectionTitle, VariantPriceEditor } from "@/components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState, use } from "react";
@@ -10,6 +10,7 @@ import {
 } from "../../../../../utils/categoryFormating";
 import apiClient from "@/lib/api";
 import { getProductImageUrl } from "@/lib/product-image";
+import { VariantPrices } from "@/lib/product-variants";
 
 const COLOR_OPTIONS = ["أسود", "أبيض", "أخضر", "أصفر", "أحمر", "أزرق", "رمادي", "شفاف", "وردي"];
 
@@ -77,6 +78,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         manufacturer: product.manufacturer.trim(),
         size: product.size?.trim() || null,
         color: product.color?.trim() || null,
+        variantPrices: product.variantPrices || null,
         description: product.description.trim(),
         categoryId: product.categoryId,
         mainImage: product.mainImage,
@@ -226,6 +228,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
               }
             />
           </label>
+          <VariantPriceEditor size={product?.size} variantPrices={product?.variantPrices} onChange={(nextSize, variantPrices) => setProduct({ ...product!, size: nextSize, variantPrices })} />
         </div>
         {/* Product name input div - end */}
         {/* Product price input div - start */}

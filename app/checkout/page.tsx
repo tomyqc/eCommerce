@@ -356,7 +356,7 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    apiClient.get("/api/payment-settings", { cache: "no-store" }).then(async (response) => {
+    fetch("/api/payment-settings", { cache: "no-store" }).then(async (response) => {
       if (response.ok) setPaymentAccounts(await response.json());
     }).catch(() => undefined);
     if (products.length === 0) {

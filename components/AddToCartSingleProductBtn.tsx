@@ -14,21 +14,22 @@
 import React from "react";
 import { useProductStore } from "@/app/_zustand/store";
 import toast from "react-hot-toast";
+import { getVariantPrice } from "@/lib/product-variants";
 
 
 
-const AddToCartSingleProductBtn = ({ product, quantityCount } : SingleProductBtnProps) => {
+const AddToCartSingleProductBtn = ({ product, quantityCount, selectedSize, selectedColor } : SingleProductBtnProps) => {
   const { addToCart, calculateTotals } = useProductStore();
 
   const handleAddToCart = () => {
     addToCart({
       id: product?.id.toString(),
       title: product?.title,
-      price: product?.price,
+      price: getVariantPrice(product?.price, selectedSize, product?.variantPrices),
       image: product?.mainImage,
       productId: product?.id.toString(),
-      size: product?.size,
-      color: product?.color,
+      size: selectedSize || null,
+      color: selectedColor || null,
       amount: quantityCount,
       inStock: product?.inStock,
       couponCode: product?.couponCode,

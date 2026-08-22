@@ -24,6 +24,7 @@ model Product {
   manufacturer   String
   size           String?
   color          String?
+  variantPrices  Json?
   inStock        Int                      @default(1)
   quantity       Int                      @default(1)
   isNew          Boolean                  @default(false)

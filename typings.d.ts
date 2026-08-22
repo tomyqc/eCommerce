@@ -9,6 +9,7 @@ interface Product {
   manufacturer: string;
   size?: string | null;
   color?: string | null;
+  variantPrices?: Record<string, number> | null;
   categoryId: string;
   merchantId: string;
   category: {name: string}?;
@@ -91,6 +92,8 @@ interface Order {
 interface SingleProductBtnProps {
   product: Product;
   quantityCount: number;
+  selectedSize?: string;
+  selectedColor?: string;
 }
 
 
