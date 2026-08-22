@@ -55,6 +55,11 @@ const ProductImageCarousel = ({
 
   const showPrevious = () => setCurrentIndex((index) => (index - 1 + images.length) % images.length);
   const showNext = () => setCurrentIndex((index) => (index + 1) % images.length);
+  const handleArrowPress = (event: React.PointerEvent<HTMLButtonElement>, action: () => void) => {
+    event.preventDefault();
+    event.stopPropagation();
+    action();
+  };
 
   return (
     <div className={`relative flex flex-col items-center ${className}`}>
@@ -69,10 +74,10 @@ const ProductImageCarousel = ({
         />
         {images.length > 1 && (
           <>
-            <button type="button" aria-label="Previous product photo" onClick={(event) => { event.preventDefault(); event.stopPropagation(); showPrevious(); }} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Previous product photo" onPointerDown={(event) => handleArrowPress(event, showPrevious)} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
               <FaChevronLeft aria-hidden="true" />
             </button>
-            <button type="button" aria-label="Next product photo" onClick={(event) => { event.preventDefault(); event.stopPropagation(); showNext(); }} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
+            <button type="button" aria-label="Next product photo" onPointerDown={(event) => handleArrowPress(event, showNext)} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 touch-manipulation rounded-full bg-white/90 p-2 text-black shadow hover:bg-white">
               <FaChevronRight aria-hidden="true" />
             </button>
           </>
