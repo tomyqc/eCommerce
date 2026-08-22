@@ -58,7 +58,7 @@ const CheckoutPage = () => {
   const couponProducts = products.filter((product) => product.couponCode?.toUpperCase() === normalizedCoupon && (product.couponPercent ?? 0) > 0);
   const discount = couponProducts.reduce((amount, product) => amount + product.price * product.amount * ((product.couponPercent ?? 0) / 100), 0);
   const discountedSubtotal = Math.max(0, total - discount);
-  const orderTotal = discountedSubtotal === 0 ? 0 : Math.round(discountedSubtotal + discountedSubtotal / 5 + 5);
+  const orderTotal = discountedSubtotal === 0 ? 0 : Math.round(discountedSubtotal + 5);
 
   // Add validation functions that match server requirements
   const validateForm = () => {
@@ -383,7 +383,7 @@ const CheckoutPage = () => {
         >
           <div className="mx-auto max-w-lg lg:max-w-none">
             <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
-              Order summary
+              عملية الطلب
             </h2>
 
             <ul
@@ -420,19 +420,15 @@ const CheckoutPage = () => {
 
             <dl className="hidden space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-900 lg:block">
               <div className="flex items-center justify-between">
-                <dt className="text-gray-600">Subtotal</dt>
+                <dt className="text-gray-600">السعر</dt>
                   <dd>{formatDZD(discountedSubtotal)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-gray-600">Shipping</dt>
+                <dt className="text-gray-600">سعر التوصيل</dt>
                   <dd>{formatDZD(5)}</dd>
               </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-gray-600">Taxes</dt>
-                  <dd>{formatDZD(discountedSubtotal / 5)}</dd>
-              </div>
               <div className="flex items-center justify-between border-t border-gray-200 pt-6">
-                <dt className="text-base">Total</dt>
+                <dt className="text-base">المجموع</dt>
                   <dd className="text-base">
                     {formatDZD(orderTotal)}
                 </dd>

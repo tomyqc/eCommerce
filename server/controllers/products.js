@@ -212,8 +212,8 @@ const getAllProducts = asyncHandler(async (request, response) => {
 
     if (Object.keys(filterObj).length === 0) {
       products = await prisma.product.findMany({
-        skip: (validatedPage - 1) * 10,
-        take: 12,
+        skip: (validatedPage - 1) * 9,
+        take: 9,
         include: {
           category: {
             select: {
@@ -227,8 +227,8 @@ const getAllProducts = asyncHandler(async (request, response) => {
       // Security: Handle category filter with proper validation
       if (filterObj.category && filterObj.category.equals) {
         products = await prisma.product.findMany({
-          skip: (validatedPage - 1) * 10,
-          take: 12,
+          skip: (validatedPage - 1) * 9,
+          take: 9,
           include: {
             category: {
               select: {
@@ -248,8 +248,8 @@ const getAllProducts = asyncHandler(async (request, response) => {
         });
       } else {
         products = await prisma.product.findMany({
-          skip: (validatedPage - 1) * 10,
-          take: 12,
+          skip: (validatedPage - 1) * 9,
+          take: 9,
           include: {
             category: {
               select: {

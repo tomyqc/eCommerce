@@ -10,7 +10,6 @@
 
 import React from "react";
 import ProductItem from "./ProductItem";
-import apiClient from "@/lib/api";
 
 const Products = async ({ params, searchParams }: { params: { slug?: string[] }, searchParams: { [key: string]: string | string[] | undefined } }) => {
   // getting all data from URL slug and preparing everything for sending GET request
@@ -27,12 +26,9 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
   }
 
   try {
-    const categoryFilter = categoryName
-      ? `filters[category][$equals]=${encodeURIComponent(categoryName)}&`
-      : "";
+    const categoryFilter = categoryName ? `&category=${encodeURIComponent(categoryName)}` : "";
     // sending API request with filtering, sorting and pagination for getting all products
-    const data = await apiClient.get(`/api/products?${categoryFilter}sort=${searchParams?.sort}&page=${page}`
-    );
+    const data = await fetch(`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/products?page=${page}&sort=${searchParams?.sort || ""}${categoryFilter}`, { cache: "no-store" });
 
     if (!data.ok) {
       console.error('Failed to fetch products:', data.statusText);

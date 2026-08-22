@@ -101,19 +101,19 @@ export const CartModule = () => {
           id="summary-heading"
           className="text-lg font-medium text-gray-900"
         >
-          Order summary
+          عملية الطلب
         </h2>
 
         <dl className="mt-6 space-y-4">
           <div className="flex items-center justify-between">
-            <dt className="text-sm text-gray-600">Subtotal</dt>
+            <dt className="text-sm text-gray-600">السعر</dt>
             <dd className="text-sm font-medium text-gray-900">
               {formatDZD(total)}
             </dd>
           </div>
           <div className="flex items-center justify-between border-t border-gray-200 pt-4">
             <dt className="flex items-center text-sm text-gray-600">
-              <span>Shipping estimate</span>
+              <span>سعر التوصيل</span>
               <a
                 href="#"
                 className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
@@ -130,31 +130,11 @@ export const CartModule = () => {
             <dd className="text-sm font-medium text-gray-900">{formatDZD(5)}</dd>
           </div>
           <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-            <dt className="flex text-sm text-gray-600">
-              <span>Tax estimate</span>
-              <a
-                href="#"
-                className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
-              >
-                <span className="sr-only">
-                  Learn more about how tax is calculated
-                </span>
-                <FaCircleQuestion
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                />
-              </a>
-            </dt>
-            <dd className="text-sm font-medium text-gray-900">
-              {formatDZD(total / 5)}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between border-t border-gray-200 pt-4">
             <dt className="text-base font-medium text-gray-900">
-              Order total
+              المجموع
             </dt>
             <dd className="text-base font-medium text-gray-900">
-              {formatDZD(total === 0 ? 0 : Math.round(total + total / 5 + 5))}
+              {formatDZD(total === 0 ? 0 : Math.round(total + 5))}
             </dd>
           </div>
         </dl>
