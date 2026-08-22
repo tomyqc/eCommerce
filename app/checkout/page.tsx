@@ -49,6 +49,7 @@ const CheckoutPage = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "" });
   const [couponCode, setCouponCode] = useState("");
   const { products, total, clearCart } = useProductStore();
   const router = useRouter();
@@ -132,9 +133,8 @@ const CheckoutPage = () => {
     }
 
     if (checkoutForm.paymentMethod === "online") {
-      const cardDigits = checkoutForm.cardNumber.replace(/\D/g, "");
-      if (!checkoutForm.paymentProvider || cardDigits.length !== 16 || checkoutForm.cardCode.replace(/\D/g, "").length !== 3 || !/^\d{2}\/\d{2}$/.test(checkoutForm.expirationDate)) {
-        toast.error("Please complete the online payment fields");
+      if (!checkoutForm.paymentProvider) {
+        toast.error("Please choose CCP or Bank transfer");
         return;
       }
     }
@@ -179,7 +179,7 @@ const CheckoutPage = () => {
         orderNotice: checkoutForm.orderNotice.trim(),
         paymentMethod: checkoutForm.paymentMethod,
         paymentProvider: checkoutForm.paymentProvider,
-        cardLastFour: checkoutForm.paymentMethod === "online" ? checkoutForm.cardNumber.replace(/\D/g, "").slice(-4) : null,
+        cardLastFour: null,
         userId: userId // Add user ID for notifications
       };
 
@@ -356,6 +356,9 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    apiClient.get("/api/payment-settings", { cache: "no-store" }).then(async (response) => {
+      if (response.ok) setPaymentAccounts(await response.json());
+    }).catch(() => undefined);
     if (products.length === 0) {
       toast.error("You don't have items in your cart");
       router.push("/cart");
@@ -554,23 +557,18 @@ const CheckoutPage = () => {
                   <span>Online payment / دفع إلكتروني</span>
                 </label>
                 <label className="flex items-center gap-3">
-                  <input type="radio" name="payment-method" value="cash_on_delivery" checked={checkoutForm.paymentMethod === "cash_on_delivery"} onChange={() => setCheckoutForm({ ...checkoutForm, paymentMethod: "cash_on_delivery" })} disabled={isSubmitting} />
+                  <input type="radio" name="payment-method" value="cash_on_delivery" checked={checkoutForm.paymentMethod === "cash_on_delivery"} onChange={() => setCheckoutForm({ ...checkoutForm, paymentMethod: "cash_on_delivery", paymentProvider: "" })} disabled={isSubmitting} />
                   <span>Payment at delivery / الدفع عند الاستلام</span>
                 </label>
               </div>
               {checkoutForm.paymentMethod === "online" && <div className="mt-5 space-y-4 border border-gray-200 p-4">
-                <label className="block text-sm font-medium">Payment card / بطاقة الدفع
+                <label className="block text-sm font-medium">Transfer method / طريقة التحويل
                   <select className="mt-1 block w-full rounded-md border-gray-300" value={checkoutForm.paymentProvider} onChange={(e) => setCheckoutForm({ ...checkoutForm, paymentProvider: e.target.value })}>
-                    <option value="">Choose a card</option><option>Visa</option><option>Mastercard</option><option>CIB</option><option>Edahabia</option>
+                    <option value="">Choose a method</option><option value="CCP Transfer">CCP / BaridiMob</option><option value="Bank Transfer">Bank transfer</option>
                   </select>
                 </label>
-                <label className="block text-sm font-medium">Card number / رقم البطاقة
-                  <input className="mt-1 block w-full rounded-md border-gray-300" inputMode="numeric" maxLength={16} value={checkoutForm.cardNumber} onChange={(e) => setCheckoutForm({ ...checkoutForm, cardNumber: e.target.value.replace(/\D/g, "").slice(0, 16) })} />
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <label className="block text-sm font-medium">Security code / الرقم السري<input className="mt-1 block w-full rounded-md border-gray-300" maxLength={3} inputMode="numeric" value={checkoutForm.cardCode} onChange={(e) => setCheckoutForm({ ...checkoutForm, cardCode: e.target.value.replace(/\D/g, "").slice(0, 3) })} /></label>
-                  <label className="block text-sm font-medium">Expiration date / تاريخ انتهاء الصلاحية<input className="mt-1 block w-full rounded-md border-gray-300" placeholder="MM/YY" maxLength={5} value={checkoutForm.expirationDate} onChange={(e) => { const digits = e.target.value.replace(/\D/g, "").slice(0, 4); setCheckoutForm({ ...checkoutForm, expirationDate: digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits }); }} /></label>
-                </div>
+                {checkoutForm.paymentProvider === "CCP Transfer" && <p className="rounded bg-gray-50 p-3 text-sm">CCP account: {paymentAccounts.ccpAccount || "The seller has not added a CCP account yet."}</p>}
+                {checkoutForm.paymentProvider === "Bank Transfer" && <p className="rounded bg-gray-50 p-3 text-sm">Bank account: {paymentAccounts.bankAccount || "The seller has not added a bank account yet."}</p>}
               </div>}
               <div className="mt-5 border border-gray-200 p-4">
                 <label htmlFor="coupon-code" className="block text-sm font-medium text-gray-700">Coupon code / رمز التخفيض</label>

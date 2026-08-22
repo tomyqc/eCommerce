@@ -136,6 +136,13 @@ model Notification {
   @@index([userId, type])
   @@index([createdAt])
 }
+
+model PaymentSettings {
+  id          String   @id @default("default")
+  ccpAccount  String?
+  bankAccount String?
+  updatedAt   DateTime @updatedAt
+}
 model Merchant {
   id          String   @id @default(uuid())
   name        String

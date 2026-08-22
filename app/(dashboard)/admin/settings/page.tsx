@@ -19,6 +19,8 @@ const SettingsPage = () => {
   const [categoryIcons, setCategoryIcons] = useState<Record<string, boolean>>({});
   const [pubs, setPubs] = useState<{ slot: string; name: string; image: string }[]>([]);
   const [pubUploading, setPubUploading] = useState<string | null>(null);
+  const [paymentAccountsOpen, setPaymentAccountsOpen] = useState(false);
+  const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "" });
 
   const loadPubs = async () => {
     const response = await fetch("/api/pubs", { cache: "no-store" });
@@ -45,6 +47,23 @@ const SettingsPage = () => {
   const loadLogos = async () => {
     const response = await fetch("/api/payment-logo?format=json", { cache: "no-store" });
     if (response.ok) setLogos(await response.json());
+  };
+
+  const loadPaymentAccounts = async () => {
+    const response = await fetch("/api/payment-settings", { cache: "no-store" });
+    if (response.ok) setPaymentAccounts(await response.json());
+  };
+
+  const savePaymentAccounts = async () => {
+    const response = await fetch("/api/payment-settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(paymentAccounts) });
+    if (response.ok) { setPaymentAccounts(await response.json()); toast.success("Payment accounts saved"); }
+    else toast.error("Payment accounts could not be saved");
+  };
+
+  const deletePaymentAccount = async (account: "ccp" | "bank") => {
+    const response = await fetch(`/api/payment-settings?account=${account}`, { method: "DELETE" });
+    if (response.ok) { setPaymentAccounts((current) => ({ ...current, [account === "ccp" ? "ccpAccount" : "bankAccount"]: "" })); toast.success("Payment account removed"); }
+    else toast.error("Payment account could not be removed");
   };
 
   const loadCategories = async () => {
@@ -230,6 +249,18 @@ const SettingsPage = () => {
             <input className="file-input file-input-bordered mt-5 w-full max-w-sm" type="file" accept="image/svg+xml,image/png,image/jpeg,.svg,.png,.jpg,.jpeg" disabled={uploading !== null} onChange={(event) => addLogo(event.target.files?.[0])} />
           </div>}
         </div>}
+        <button type="button" className="btn btn-primary w-fit" onClick={() => { setPaymentAccountsOpen(!paymentAccountsOpen); if (!paymentAccountsOpen) loadPaymentAccounts(); }}>
+          {paymentAccountsOpen ? "Close payment accounts" : "Manage payment accounts"}
+        </button>
+        {paymentAccountsOpen && <section className="flex max-w-xl flex-col gap-y-4 border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold">CCP and bank transfer accounts</h2>
+          <p className="text-sm text-gray-600">These details appear to buyers only after they choose online payment. Leave them blank until verified.</p>
+          <label className="form-control"><span className="label-text">CCP / BaridiMob account</span><input className="input input-bordered" value={paymentAccounts.ccpAccount} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, ccpAccount: event.target.value })} placeholder="CCP account and RIP" /></label>
+          <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("ccp")}>Delete CCP account</button>
+          <label className="form-control"><span className="label-text">Bank account</span><input className="input input-bordered" value={paymentAccounts.bankAccount} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, bankAccount: event.target.value })} placeholder="Bank account / RIB" /></label>
+          <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("bank")}>Delete bank account</button>
+          <button type="button" className="btn btn-primary w-fit" onClick={savePaymentAccounts}>Save payment accounts</button>
+        </section>}
         <BottomPagesManager />
       </main>
     </div>

@@ -357,11 +357,16 @@ const validateOrderData = (orderData) => {
   validatedData.status = safeValidate(orderValidation.validateStatus, orderData.status || 'pending', 'status');
   validatedData.paymentMethod = ['online', 'cash_on_delivery'].includes(orderData.paymentMethod)
     ? orderData.paymentMethod : 'cash_on_delivery';
-  validatedData.paymentProvider = typeof orderData.paymentProvider === 'string'
-    ? orderData.paymentProvider.trim().substring(0, 30) : null;
-  validatedData.paymentStatus = validatedData.paymentMethod === 'online' ? 'paid' : 'unpaid';
-  validatedData.cardLastFour = typeof orderData.cardLastFour === 'string' && /^\d{4}$/.test(orderData.cardLastFour)
-    ? orderData.cardLastFour : null;
+  const paymentProvider = typeof orderData.paymentProvider === 'string'
+    ? orderData.paymentProvider.trim() : '';
+  const validPaymentProviders = ['CCP Transfer', 'Bank Transfer'];
+  if (validatedData.paymentMethod === 'online' && !validPaymentProviders.includes(paymentProvider)) {
+    errors.push({ field: 'paymentProvider', message: 'A valid online payment method is required' });
+  }
+  validatedData.paymentProvider = validatedData.paymentMethod === 'online' && validPaymentProviders.includes(paymentProvider)
+    ? paymentProvider : null;
+  validatedData.paymentStatus = 'unpaid';
+  validatedData.cardLastFour = null;
   
   // Optional fields
   validatedData.orderNotice = orderData.orderNotice ? 

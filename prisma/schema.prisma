@@ -148,6 +148,13 @@ model Notification {
   @@index([createdAt])
 }
 
+model PaymentSettings {
+  id          String   @id @default("default")
+  ccpAccount  String?
+  bankAccount String?
+  updatedAt   DateTime @updatedAt
+}
+
 model BottomPage {
   id        String   @id @default(uuid())
   section   String
