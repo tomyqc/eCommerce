@@ -6,8 +6,27 @@ async function getProductBySlug(request, response) {
     where: {
       slug: slug,
     },
-    include: {
-      category: true
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      mainImage: true,
+      price: true,
+      rating: true,
+      description: true,
+      manufacturer: true,
+      size: true,
+      color: true,
+      variantPrices: true,
+      inStock: true,
+      quantity: true,
+      isNew: true,
+      isSold: true,
+      couponCode: true,
+      couponPercent: true,
+      categoryId: true,
+      merchantId: true,
+      category: true,
     },
   });
 
