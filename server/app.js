@@ -74,6 +74,10 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean); // Remove undefined values
 
+if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL) {
+  throw new Error('FRONTEND_URL environment variable is required in production');
+}
+
 // CORS configuration with origin validation
 const corsOptions = {
   origin: function (origin, callback) {
