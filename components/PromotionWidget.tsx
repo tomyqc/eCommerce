@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import apiClient from "@/lib/api";
 import Heading from "@/components/Heading";
-import { formatDZD } from "@/lib/currency";
 import { getProductImageUrl } from "@/lib/product-image";
 
 type PromotionProduct = {
@@ -44,7 +43,6 @@ const PromotionWidget = () => {
               <div className="relative h-[78%] w-full">
                 <Image src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && product.couponPercent > 0)))} alt={product.title} fill sizes="20vw" className="object-contain" />
               </div>
-              <p className="mt-2 text-lg font-semibold text-black">{formatDZD(product.price)}</p>
             </Link>
             );
           })}
