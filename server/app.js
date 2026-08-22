@@ -85,7 +85,7 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
 
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes(origin) || (process.env.NODE_ENV === 'production' && /^https:\/\/[^/]+\.vercel\.app$/.test(origin))) {
       return callback(null, true);
     }
     
