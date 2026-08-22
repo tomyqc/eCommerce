@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import apiClient from "@/lib/api";
 import { formatDZD } from "@/lib/currency";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
+import { getVariantPrice } from "@/lib/product-variants";
 
 const algerianWilayas = [
   ["01", "Adrar"], ["02", "Chlef"], ["03", "Laghouat"], ["04", "Oum El Bouaghi"],
@@ -51,7 +52,7 @@ const CheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "" });
   const [couponCode, setCouponCode] = useState("");
-  const { products, total, clearCart } = useProductStore();
+  const { products, total, clearCart, updateCartVariant } = useProductStore();
   const router = useRouter();
   const normalizedCoupon = couponCode.trim().toUpperCase();
   const couponProducts = products.filter((product) => product.couponCode?.toUpperCase() === normalizedCoupon && (product.couponPercent ?? 0) > 0);
@@ -389,20 +390,32 @@ const CheckoutPage = () => {
               role="list"
               className="divide-y divide-gray-200 text-sm font-medium text-gray-900"
             >
-              {products.map((product) => (
+              {products.map((product) => {
+                const hasSizeChoices = (product.sizeOptions?.length || 0) > 1;
+                const hasColorChoices = (product.colorOptions?.length || 0) > 1;
+                return (
                 <li key={product?.id} className="flex items-start space-x-4 py-6">
                   <ProductImageCarousel productId={product.productId || product.id} mainImage={product.image} title={product.title} className="h-20 w-20 flex-none" imageClassName="h-full w-full rounded-md object-contain" />
                   <div className="flex-auto space-y-1">
                     <h3>{product?.title}</h3>
                     <p className="text-gray-500">x{product?.amount}</p>
                     {(product?.color || product?.size) && <p className="text-gray-500">{[product.color, product.size].filter(Boolean).join(" / ")}</p>}
+                    {(hasSizeChoices || hasColorChoices) && <div className="mt-3 space-y-2">
+                      {hasSizeChoices && <label className="block text-sm text-gray-700">Size
+                        <select className="ml-2 rounded-md border-gray-300 text-sm" value={product.size || ""} onChange={(event) => updateCartVariant(product.id, event.target.value, product.color || null, getVariantPrice(product.basePrice ?? product.price, event.target.value, product.variantPrices))}>{product.sizeOptions?.map((size) => <option key={size}>{size}</option>)}</select>
+                      </label>}
+                      {hasColorChoices && <label className="block text-sm text-gray-700">Color
+                        <select className="ml-2 rounded-md border-gray-300 text-sm" value={product.color || ""} onChange={(event) => updateCartVariant(product.id, product.size || null, event.target.value, product.price)}>{product.colorOptions?.map((color) => <option key={color}>{color}</option>)}</select>
+                      </label>}
+                    </div>}
                     {product?.couponPercent ? <p className="text-green-700">-{product.couponPercent}%</p> : null}
                   </div>
                     <p className="flex-none text-base font-medium">
                       {formatDZD(product?.price)}
                   </p>
                 </li>
-              ))}
+                );
+              })}
             </ul>
 
             <dl className="hidden space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-900 lg:block">

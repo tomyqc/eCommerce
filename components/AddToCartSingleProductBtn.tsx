@@ -15,6 +15,7 @@ import React from "react";
 import { useProductStore } from "@/app/_zustand/store";
 import toast from "react-hot-toast";
 import { getVariantPrice } from "@/lib/product-variants";
+import { parseOptions } from "@/lib/product-variants";
 
 
 
@@ -26,10 +27,14 @@ const AddToCartSingleProductBtn = ({ product, quantityCount, selectedSize, selec
       id: product?.id.toString(),
       title: product?.title,
       price: getVariantPrice(product?.price, selectedSize, product?.variantPrices),
+      basePrice: product?.price,
       image: product?.mainImage,
       productId: product?.id.toString(),
       size: selectedSize || null,
       color: selectedColor || null,
+      sizeOptions: parseOptions(product?.size),
+      colorOptions: parseOptions(product?.color),
+      variantPrices: product?.variantPrices,
       amount: quantityCount,
       inStock: product?.inStock,
       couponCode: product?.couponCode,

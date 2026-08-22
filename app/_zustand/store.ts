@@ -5,9 +5,13 @@ export type ProductInCart = {
   id: string;
   title: string;
   price: number;
+  basePrice?: number;
   image: string;
   size?: string | null;
   color?: string | null;
+  sizeOptions?: string[];
+  colorOptions?: string[];
+  variantPrices?: Record<string, number> | null;
   amount: number;
   inStock: number;
   couponCode?: string | null;
@@ -27,6 +31,7 @@ export type Actions = {
   addToCart: (newProduct: ProductInCart) => void;
   removeFromCart: (id: string) => void;
   updateCartAmount: (id: string, quantity: number) => void;
+  updateCartVariant: (id: string, size: string | null, color: string | null, price: number) => void;
   calculateTotals: () => void;
   clearCart: () => void;
 };
@@ -104,6 +109,12 @@ export const useProductStore = create<State & Actions>()(
           }
 
           return { products: [...state.products] };
+        });
+      },
+      updateCartVariant: (id, size, color, price) => {
+        set((state) => {
+          const products = state.products.map((product) => product.id === id ? { ...product, size, color, price } : product);
+          return { products, total: products.reduce((sum, product) => sum + product.price * product.amount, 0) };
         });
       },
     }),

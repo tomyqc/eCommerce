@@ -14,6 +14,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { getVariantPrice } from "@/lib/product-variants";
+import { parseOptions } from "@/lib/product-variants";
 
 const BuyNowSingleProductBtn = ({
   product,
@@ -29,10 +30,14 @@ const BuyNowSingleProductBtn = ({
       id: product?.id.toString(),
       title: product?.title,
       price: getVariantPrice(product?.price, selectedSize, product?.variantPrices),
+      basePrice: product?.price,
       image: product?.mainImage,
       productId: product?.id.toString(),
       size: selectedSize || null,
       color: selectedColor || null,
+      sizeOptions: parseOptions(product?.size),
+      colorOptions: parseOptions(product?.color),
+      variantPrices: product?.variantPrices,
       amount: quantityCount,
       inStock: product?.inStock,
       couponCode: product?.couponCode,
