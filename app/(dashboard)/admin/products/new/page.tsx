@@ -206,9 +206,14 @@ const AddNewProduct = () => {
               type="text"
               className="input input-bordered w-full max-w-xs"
               value={product?.title}
-              onChange={(e) =>
-                setProduct({ ...product, title: e.target.value })
-              }
+              onChange={(e) => {
+                const title = e.target.value;
+                setProduct({
+                  ...product,
+                  title,
+                  slug: product.slug || convertSlugToURLFriendly(title),
+                });
+              }}
             />
           </label>
         </div>
