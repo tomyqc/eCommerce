@@ -26,6 +26,23 @@ export async function POST(request: Request) {
   return NextResponse.json(announcement, { status: 201 });
 }
 
+export async function PUT(request: Request) {
+  if (!(await hasAnnouncementAccess())) return NextResponse.json({ error: "Announcement access required" }, { status: 403 });
+  const id = new URL(request.url).searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "Announcement id is required" }, { status: 400 });
+  const formData = await request.formData();
+  const title = String(formData.get("title") || "").trim() || null;
+  const file = formData.get("file");
+  const data: { title: string | null; media?: string; mediaType?: string } = { title };
+  if (file instanceof File && file.size > 0) {
+    if ((!file.type.startsWith("image/") && !file.type.startsWith("video/")) || file.size > 12 * 1024 * 1024) return NextResponse.json({ error: "Upload an image or video smaller than 12 MB" }, { status: 400 });
+    data.media = `data:${file.type};base64,${Buffer.from(await file.arrayBuffer()).toString("base64")}`;
+    data.mediaType = file.type.startsWith("video/") ? "video" : "image";
+  }
+  const announcement = await prisma.announcement.update({ where: { id }, data });
+  return NextResponse.json(announcement);
+}
+
 export async function DELETE(request: Request) {
   if (!(await hasAnnouncementAccess())) return NextResponse.json({ error: "Announcement access required" }, { status: 403 });
   const id = new URL(request.url).searchParams.get("id");

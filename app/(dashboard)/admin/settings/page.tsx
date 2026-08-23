@@ -9,6 +9,24 @@ import BottomPagesManager from "@/components/BottomPagesManager";
 import { FaShapes } from "react-icons/fa6";
 import Link from "next/link";
 
+type AnnouncementEditorItem = { id: string; title: string | null; media: string; mediaType: "image" | "video" };
+
+function AnnouncementEditor({ item, editing, onEdit, onCancel, onSave, onDelete }: { item: AnnouncementEditorItem; editing: boolean; onEdit: () => void; onCancel: () => void; onSave: (id: string, title: string, file?: File) => void; onDelete: (id: string) => void }) {
+  const [title, setTitle] = useState(item.title || "");
+  const [file, setFile] = useState<File>();
+  return <div className="border border-gray-200 p-4">
+    {item.mediaType === "video" ? <video src={item.media} controls className="h-40 w-full object-contain" /> : <img src={item.media} alt={item.title || "Announcement"} className="h-40 w-full object-contain" />}
+    {editing ? <div className="mt-3 flex flex-col gap-2">
+      <input className="input input-bordered input-sm w-full" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Optional title" />
+      <input className="file-input file-input-bordered file-input-sm w-full" type="file" accept="image/*,video/*" onChange={(event) => setFile(event.target.files?.[0])} />
+      <div className="flex flex-wrap gap-2"><button type="button" className="btn btn-sm btn-primary" onClick={() => onSave(item.id, title, file)}>Save changes</button><button type="button" className="btn btn-sm btn-outline" onClick={onCancel}>Cancel</button></div>
+    </div> : <>
+      <p className="mt-2 font-semibold">{item.title || "Untitled announcement"}</p>
+      <div className="flex flex-wrap gap-2"><button type="button" className="btn btn-sm btn-outline mt-3" onClick={onEdit}>Modify</button><button type="button" className="btn btn-sm btn-error mt-3" onClick={() => onDelete(item.id)}>Delete</button></div>
+    </>}
+  </div>;
+}
+
 const SettingsPage = () => {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [paymentLogosOpen, setPaymentLogosOpen] = useState(false);
@@ -28,6 +46,7 @@ const SettingsPage = () => {
   const [announcements, setAnnouncements] = useState<{ id: string; title: string | null; media: string; mediaType: "image" | "video" }[]>([]);
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementUploading, setAnnouncementUploading] = useState(false);
+  const [editingAnnouncement, setEditingAnnouncement] = useState<string | null>(null);
   const [branding, setBranding] = useState({ logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png", backgroundOpacity: 0.2 });
 
   const loadPubs = async () => {
@@ -96,6 +115,11 @@ const SettingsPage = () => {
     if (response.ok) { setAnnouncementTitle(""); toast.success("Announcement added"); await loadAnnouncements(); } else toast.error((await response.json()).error || "Announcement upload failed");
   };
   const deleteAnnouncement = async (id: string) => { const response = await fetch(`/api/announcements?id=${id}`, { method: "DELETE" }); if (response.ok) { toast.success("Announcement deleted"); await loadAnnouncements(); } else toast.error("Announcement deletion failed"); };
+  const updateAnnouncement = async (id: string, title: string, file?: File) => {
+    const formData = new FormData(); formData.append("title", title); if (file) formData.append("file", file);
+    const response = await fetch(`/api/announcements?id=${id}`, { method: "PUT", body: formData });
+    if (response.ok) { setEditingAnnouncement(null); toast.success("Announcement updated"); await loadAnnouncements(); } else toast.error((await response.json()).error || "Announcement update failed");
+  };
 
   const loadCategories = async () => {
     const response = await apiClient.get("/api/categories");
@@ -304,7 +328,7 @@ const SettingsPage = () => {
         {announcementsOpen && <section className="flex max-w-5xl flex-col gap-5 border border-gray-200 p-6">
           <div><h2 className="text-xl font-semibold">Announcements</h2><p className="mt-2 text-gray-600">Add unlimited app promotions, product promotions, and announcements. Images and videos use the same single-item animation as New Products.</p></div>
           <div className="flex flex-wrap gap-3"><input className="input input-bordered" placeholder="Optional title" value={announcementTitle} onChange={(event) => setAnnouncementTitle(event.target.value)} /><label className="btn btn-primary">Add photo or video<input className="hidden" type="file" accept="image/*,video/*" disabled={announcementUploading} onChange={(event) => uploadAnnouncement(event.target.files?.[0])} /></label></div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{announcements.map((item) => <div className="border border-gray-200 p-4" key={item.id}>{item.mediaType === "video" ? <video src={item.media} controls className="h-40 w-full object-contain" /> : <img src={item.media} alt={item.title || "Announcement"} className="h-40 w-full object-contain" />}<p className="mt-2 font-semibold">{item.title || "Untitled announcement"}</p><button type="button" className="btn btn-sm btn-error mt-3" onClick={() => deleteAnnouncement(item.id)}>Delete</button></div>)}</div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{announcements.map((item) => <AnnouncementEditor key={item.id} item={item} editing={editingAnnouncement === item.id} onEdit={() => setEditingAnnouncement(item.id)} onCancel={() => setEditingAnnouncement(null)} onSave={updateAnnouncement} onDelete={deleteAnnouncement} />)}</div>
         </section>}
         <BottomPagesManager />
       </main>

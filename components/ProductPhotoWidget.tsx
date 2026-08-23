@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { formatDZD } from "@/lib/currency";
 import { getProductImageUrl } from "@/lib/product-image";
 
 type ProductPhoto = {
@@ -20,6 +18,7 @@ type ProductPhoto = {
 
 const ProductPhotoWidget = () => {
   const [products, setProducts] = useState<ProductPhoto[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -45,31 +44,19 @@ const ProductPhotoWidget = () => {
 
   if (products.length === 0) return null;
 
-  return (
-    <div className="relative left-1/2 mt-8 h-96 w-screen -translate-x-1/2 overflow-hidden bg-transparent max-md:h-72" aria-label="Featured product photos">
-      <div className="flex h-full w-max animate-product-marquee" style={{ animationDuration: `${Math.max(products.length * 2.5, 18)}s` }}>
-        {[...products, ...products].map((product, productIndex) => (
-          <Link
-            key={`${product.id}-${productIndex}`}
-            href={`/product/${product.slug}`}
-            className="flex h-full w-[20vw] min-w-[20vw] shrink-0 flex-col items-center justify-center px-5 py-5 max-md:w-[50vw] max-md:min-w-[50vw]"
-          >
-            <div className="relative h-[78%] w-full">
-              <img
-                src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && Number(product.couponPercent) > 0)))}
-                alt={product.title}
-                className="h-full w-full object-contain"
-                onError={(event) => {
-                  event.currentTarget.src = "/product_placeholder.jpg";
-                }}
-              />
-            </div>
-            <p className="mt-2 text-lg font-semibold text-black">{formatDZD(product.price)}</p>
-          </Link>
-        ))}
-      </div>
+  const product = products[activeIndex % products.length];
+  return <div className="relative left-1/2 mt-8 h-96 w-screen -translate-x-1/2 overflow-hidden bg-transparent max-md:h-72" aria-label="Featured product photos">
+    <div key={`${product.id}-${activeIndex}`} className="animate-new-product-cycle absolute inset-0 flex items-center justify-center" onAnimationEnd={() => setActiveIndex((index) => (index + 1) % products.length)}>
+      <img
+        src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && Number(product.couponPercent) > 0)))}
+        alt={product.title}
+        className="h-[86%] w-full max-w-xl object-contain"
+        onError={(event) => {
+          event.currentTarget.src = "/product_placeholder.jpg";
+        }}
+      />
     </div>
-  );
+  </div>;
 };
 
 export default ProductPhotoWidget;
