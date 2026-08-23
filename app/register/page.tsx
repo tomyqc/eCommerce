@@ -25,9 +25,10 @@ const RegisterPage = () => {
   
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const email = e.target[2].value;
-    const password = e.target[3].value;
-    const confirmPassword = e.target[4].value;
+    const email = e.target.email.value;
+    const phone = e.target.phone.value;
+    const password = e.target.password.value;
+    const confirmPassword = e.target.confirmpassword.value;
 
     if (!isValidEmail(email)) {
       setError("Email is invalid");
@@ -35,9 +36,15 @@ const RegisterPage = () => {
       return;
     }
 
-    if (!password || password.length < 8) {
-      setError("Password must be 8 characters long");
-      toast.error("Password must be 8 characters long");
+    if (!phone.trim()) {
+      setError("Phone number is required");
+      toast.error("Phone number is required");
+      return;
+    }
+
+    if (!password || password.length < 10 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password) || !/[^A-Za-z\d]/.test(password)) {
+      setError("Password must be at least 10 characters and include uppercase, lowercase, number, and special character");
+      toast.error("Password must be at least 10 characters and include uppercase, lowercase, number, and special character");
       return;
     }
 
@@ -56,6 +63,7 @@ const RegisterPage = () => {
         },
         body: JSON.stringify({
           email,
+          phone,
           password,
         }),
       });
@@ -105,6 +113,11 @@ const RegisterPage = () => {
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
+                <div className="mt-2"><input id="phone" name="phone" type="tel" autoComplete="tel" required className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" /></div>
+              </div>
+
               <div>
                 <label
                   htmlFor="name"

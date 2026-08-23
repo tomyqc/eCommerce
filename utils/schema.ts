@@ -3,7 +3,9 @@ import { commonValidations } from "./validation";
 
 // Registration schema with comprehensive validation
 export const registrationSchema = z.object({
+  name: z.string().min(1, "Name is required").max(120).trim(),
   email: commonValidations.email,
+  phone: z.string().min(3, "Phone number is required").max(40, "Phone number is too long").trim(),
   password: commonValidations.password,
 });
 

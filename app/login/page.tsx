@@ -10,6 +10,7 @@ const LoginPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
+  const [googleAvailable, setGoogleAvailable] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const callbackUrl = searchParams.get("callbackUrl");
   const redirectTarget = (() => {
@@ -24,13 +25,12 @@ const LoginPage = () => {
   })();
 
   useEffect(() => {
-    // Check if session expired
-    const expired = searchParams.get('expired');
-    if (expired === 'true') {
+    fetch("/api/auth/providers").then((response) => response.ok ? response.json() : {}).then((providers: Record<string, unknown>) => setGoogleAvailable(Boolean(providers.google))).catch(() => undefined);
+    if (searchParams.get("expired") === "true") {
       setError("Your session has expired. Please log in again.");
       toast.error("Your session has expired. Please log in again.");
     }
-    
+
     // if user has already logged in redirect to home page
     if (sessionStatus === "authenticated") {
       router.replace(redirectTarget);
@@ -177,8 +177,8 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                <button
+              <div className="mt-6 flex justify-center gap-4">
+                {googleAvailable && <button
                   className="flex w-full items-center border border-gray-300 justify-center gap-3 rounded-md bg-white px-3 py-1.5 text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   onClick={() => {
                     signIn("google");
@@ -188,7 +188,7 @@ const LoginPage = () => {
                   <span className="text-sm font-semibold leading-6">
                     Google
                   </span>
-                </button>
+                </button>}
 
                 <button
                   className="flex w-full items-center justify-center gap-3 rounded-md bg-[#24292F] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"

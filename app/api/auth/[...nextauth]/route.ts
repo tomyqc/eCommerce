@@ -1,5 +1,4 @@
 import NextAuth from "next-auth/next";
-import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
@@ -20,20 +19,16 @@ export const authOptions = {
         try {
           const user = await prisma.user.findFirst({
             where: {
-              OR: [{ email: credentials.email }, { phone: credentials.email }],
+              OR: [{ email: String(credentials.email).trim().toLowerCase() }, { phone: String(credentials.email).trim() }],
             },
           });
           if (user) {
-            const isPasswordCorrect = await bcrypt.compare(
-              credentials.password,
-              user.password!
-            );
+            const isPasswordCorrect = user.password ? await bcrypt.compare(credentials.password, user.password) : false;
             if (isPasswordCorrect) {
               return {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                image: user.image,
                 role: user.role,
                 permissions: user.permissions,
               };
@@ -45,15 +40,10 @@ export const authOptions = {
         return null;
       },
     }),
-    // Uncomment and configure these providers as needed
-    // GithubProvider({
-    //   clientId: process.env.GITHUB_ID!,
-    //   clientSecret: process.env.GITHUB_SECRET!,
-    // }),
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })] : []),
   ],
   callbacks: {
     async signIn({ user, account }: any) {
@@ -62,7 +52,7 @@ export const authOptions = {
       }
       
       // Handle OAuth providers
-      if (account?.provider === "github" || account?.provider === "google") {
+      if (account?.provider === "google") {
         try {
           // Check if user exists in database
           const existingUser = await prisma.user.findFirst({
@@ -71,18 +61,24 @@ export const authOptions = {
             },
           });
 
-          if (!existingUser) {
+          let accountUser = existingUser;
+          if (!accountUser) {
             // Create new user for OAuth providers
-            await prisma.user.create({
+            accountUser = await prisma.user.create({
               data: {
                 id: nanoid(),
                 email: user.email!,
+                name: user.name,
+                image: user.image,
                 role: "user",
                 // OAuth users don't have passwords
                 password: null,
               },
             });
           }
+          user.id = accountUser.id;
+          user.role = accountUser.role;
+          user.permissions = accountUser.permissions;
           return true;
         } catch (error) {
           console.error("Error in signIn callback:", error);
@@ -98,6 +94,16 @@ export const authOptions = {
         token.id = user.id;
         token.permissions = user.permissions;
         token.iat = Math.floor(Date.now() / 1000); // Issued at time
+      }
+
+      if (token.id) {
+        const currentUser = await prisma.user.findUnique({ where: { id: token.id } });
+        if (currentUser) {
+          token.role = currentUser.role;
+          token.permissions = currentUser.permissions;
+          token.email = currentUser.email;
+          token.name = currentUser.name;
+        }
       }
       
       // Check if token is expired (15 minutes)
@@ -117,6 +123,9 @@ export const authOptions = {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
         session.user.permissions = token.permissions as string[];
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.image = typeof token.picture === "string" && !token.picture.startsWith("data:") ? token.picture : "";
       }
       return session;
     },
