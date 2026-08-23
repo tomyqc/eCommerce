@@ -40,7 +40,7 @@ async function getMerchantById(request, response) {
 
 async function createMerchant(request, response) {
   try {
-    const { name, email, phone, address, description, status } = request.body;
+    const { name, email, phone, address, description, status, grade, permissions } = request.body;
 
     const merchant = await prisma.merchant.create({
       data: {
@@ -50,6 +50,8 @@ async function createMerchant(request, response) {
         address,
         description,
         status: status || "ACTIVE",
+        grade: grade || "seller",
+        permissions: Array.isArray(permissions) ? permissions : [],
       },
     });
 
@@ -63,7 +65,7 @@ async function createMerchant(request, response) {
 async function updateMerchant(request, response) {
   try {
     const { id } = request.params;
-    const { name, email, phone, address, description, status } = request.body;
+    const { name, email, phone, address, description, status, grade, permissions } = request.body;
 
     const merchant = await prisma.merchant.update({
       where: {
@@ -76,6 +78,8 @@ async function updateMerchant(request, response) {
         address,
         description,
         status,
+        grade,
+        permissions: Array.isArray(permissions) ? permissions : [],
       },
     });
 

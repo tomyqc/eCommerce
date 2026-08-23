@@ -14,6 +14,8 @@ export default function NewMerchantPage() {
     address: "",
     description: "",
     status: "ACTIVE",
+    grade: "seller",
+    permissions: ["dashboard", "products"],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -38,11 +40,7 @@ export default function NewMerchantPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await apiClient.post("/api/merchants", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await apiClient.post("/api/merchants", formData);
 
       if (!response.ok) {
         throw new Error("Failed to create merchant");
@@ -110,6 +108,15 @@ export default function NewMerchantPage() {
               />
             </div>
             <div>
+              <label className="block text-gray-700 font-medium mb-2">Grade</label>
+              <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
+                <option value="agent">Agent</option>
+                <option value="seller">Seller</option>
+                <option value="promotor">Promotor</option>
+                <option value="collaborator">Collaborator</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-gray-700 font-medium mb-2">Status</label>
               <select
                 name="status"
@@ -143,6 +150,9 @@ export default function NewMerchantPage() {
               ></textarea>
             </div>
             <div className="md:col-span-2">
+              <fieldset className="flex flex-col gap-2"><legend className="block text-gray-700 font-medium mb-2">Access</legend>{["dashboard", "orders", "products", "categories", "bulk-upload"].map((permission) => <label key={permission} className="flex items-center gap-2 capitalize"><input type="checkbox" className="checkbox" checked={formData.permissions.includes(permission)} onChange={(event) => setFormData((current) => ({ ...current, permissions: event.target.checked ? [...current.permissions, permission] : current.permissions.filter((item) => item !== permission) }))} />{permission.replace("-", " ")}</label>)}</fieldset>
+            </div>
+            <div className="md:col-span-2 flex gap-3">
               <button 
                 type="submit" 
                 disabled={isSubmitting}
@@ -150,7 +160,7 @@ export default function NewMerchantPage() {
                   isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
-                {isSubmitting ? "Creating..." : "Create Merchant"}
+                {isSubmitting ? "Saving..." : "Save Merchant"}
               </button>
             </div>
           </form>

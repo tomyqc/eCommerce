@@ -188,6 +188,8 @@ model Merchant {
   phone       String?
   address     String?
   status      String   @default("ACTIVE")
+  grade       String   @default("seller")
+  permissions Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -22,6 +22,8 @@ interface Merchant {
   address: string | null;
   description: string | null;
   status: string;
+  grade: string;
+  permissions: string[];
   products: Product[];
 }
 
@@ -45,6 +47,8 @@ export default function MerchantDetailPage({
     address: "",
     description: "",
     status: "ACTIVE",
+    grade: "seller",
+    permissions: ["dashboard", "products"],
   });
 
   const router = useRouter();
@@ -71,6 +75,8 @@ export default function MerchantDetailPage({
         address: data.address || "",
         description: data.description || "",
         status: data.status || "ACTIVE",
+        grade: data.grade || "seller",
+        permissions: data.permissions || [],
       });
     } catch (error) {
       console.error("Error fetching merchant:", error);
@@ -215,6 +221,12 @@ const handleInputChange = (
               />
             </div>
             <div>
+              <label className="block text-gray-700 font-medium mb-2">Grade</label>
+              <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
+                <option value="agent">Agent</option><option value="seller">Seller</option><option value="promotor">Promotor</option><option value="collaborator">Collaborator</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-gray-700 font-medium mb-2">Status</label>
               <select
                 name="status"
@@ -225,6 +237,9 @@ const handleInputChange = (
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
               </select>
+            </div>
+            <div className="md:col-span-2">
+              <fieldset className="flex flex-col gap-2"><legend className="block text-gray-700 font-medium mb-2">Access</legend>{["dashboard", "orders", "products", "categories", "bulk-upload"].map((permission) => <label key={permission} className="flex items-center gap-2 capitalize"><input type="checkbox" className="checkbox" checked={formData.permissions.includes(permission)} onChange={(event) => setFormData((current) => ({ ...current, permissions: event.target.checked ? [...current.permissions, permission] : current.permissions.filter((item) => item !== permission) }))} />{permission.replace("-", " ")}</label>)}</fieldset>
             </div>
             <div className="md:col-span-2">
               <label className="block text-gray-700 font-medium mb-2">Address</label>
