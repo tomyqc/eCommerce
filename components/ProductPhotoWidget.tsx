@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { formatDZD } from "@/lib/currency";
 import { getProductImageUrl } from "@/lib/product-image";
 
 type ProductPhoto = {
@@ -55,6 +57,10 @@ const ProductPhotoWidget = () => {
           event.currentTarget.src = "/product_placeholder.jpg";
         }}
       />
+      <Link href={`/product/${product.slug}`} className="absolute bottom-3 text-center text-lg font-semibold text-black">
+        <span className="block">{product.title}</span>
+        <span className="block text-base">{formatDZD(product.price)}</span>
+      </Link>
     </div>
   </div>;
 };
