@@ -32,14 +32,14 @@ const DashboardSidebar = () => {
     { href: "/admin/bulk-upload", label: "Bulk Upload", icon: FaFileUpload },
     { href: "/admin/categories", label: "Categories", icon: MdCategory },
     { href: "/admin/users", label: "Users", icon: FaRegUser },
-    { href: "/admin/merchant", label: "Agents", icon: FaStore },
-    { href: "/admin/settings", label: "Settings", icon: FaGear },
+    { href: "/admin/merchant", label: "Manage agents", permission: "agents", icon: FaStore },
+    { href: "/admin/settings", label: "Payment accounts", permission: "payment-settings", icon: FaGear },
   ];
 
   return (
     <nav className="relative z-[200] w-full max-w-[520px] shrink-0 p-3 xl:w-[520px] max-xl:mx-auto" aria-label="Admin menu">
       <div className="grid grid-cols-3 gap-2 max-[420px]:grid-cols-2">
-        {menuItems.filter(({ href }) => sessionUser?.role === "admin" || permissions.includes(href === "/admin" ? "dashboard" : href.split("/")[2])).map(({ href, label, icon: Icon }) => (
+        {menuItems.filter(({ href, permission }) => sessionUser?.role === "admin" || permissions.includes(permission || (href === "/admin" ? "dashboard" : href.split("/")[2]))).map(({ href, label, icon: Icon }) => (
           <Link
             href={href}
             key={href}

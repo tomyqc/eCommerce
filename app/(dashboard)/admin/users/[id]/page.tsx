@@ -162,7 +162,7 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
             </select>
           </label>
         </div>
-        <fieldset className="flex max-w-md flex-col gap-2"><legend className="font-semibold">Dashboard access</legend>{["dashboard", "orders", "products", "categories", "bulk-upload"].map((permission) => <label key={permission} className="flex items-center gap-2 capitalize"><input type="checkbox" className="checkbox" checked={userInput.permissions.includes(permission)} onChange={(event) => setUserInput({ ...userInput, permissions: event.target.checked ? [...userInput.permissions, permission] : userInput.permissions.filter((item) => item !== permission) })} />{permission.replace("-", " ")}</label>)}</fieldset>
+        <fieldset className="flex max-w-md flex-col gap-2"><legend className="font-semibold">Dashboard access</legend>{["dashboard", "orders", "products", "categories", "bulk-upload", "payment-settings", "agents"].map((permission) => <label key={permission} className="flex items-center gap-2 capitalize"><input type="checkbox" className="checkbox" checked={userInput.permissions.includes(permission)} onChange={(event) => setUserInput({ ...userInput, permissions: event.target.checked ? [...userInput.permissions, permission] : userInput.permissions.filter((item) => item !== permission) })} />{permission === "payment-settings" ? "Manage payment accounts" : permission === "agents" ? "Manage agents" : permission.replace("-", " ")}</label>)}</fieldset>
         <div className="flex gap-x-2 max-sm:flex-col">
           <button
             type="button"
