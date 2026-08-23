@@ -380,8 +380,10 @@ const CheckoutPage = () => {
           className="px-4 pb-10 pt-16 sm:px-6 lg:col-start-2 lg:row-start-1 lg:bg-transparent lg:px-0 lg:pb-16"
         >
           <div className="mx-auto max-w-lg lg:max-w-none">
-            <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
-              عملية الطلب
+            <h2 id="summary-heading" className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-lg font-medium text-gray-900">
+              <span className="text-left">Summary of order</span>
+              <span className="text-center" dir="rtl">عملية الطلب</span>
+              <span aria-hidden="true" />
             </h2>
 
             <ul
@@ -417,19 +419,22 @@ const CheckoutPage = () => {
             </ul>
 
             <dl className="hidden space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-900 lg:block">
-              <div className="flex items-center justify-between">
-                <dt className="text-gray-600">السعر</dt>
-                  <dd>{formatDZD(discountedSubtotal)}</dd>
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                <dt className="text-left text-gray-600">Price</dt>
+                  <dd className="text-center">{formatDZD(discountedSubtotal)}</dd>
+                <span className="text-right text-gray-600" dir="rtl">السعر</span>
               </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-gray-600">سعر التوصيل</dt>
-                  <dd>{formatDZD(paymentAccounts.shippingCost)}</dd>
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                <dt className="text-left text-gray-600">Shipping</dt>
+                  <dd className="text-center">{formatDZD(paymentAccounts.shippingCost)}</dd>
+                <span className="text-right text-gray-600" dir="rtl">سعر التوصيل</span>
               </div>
-              <div className="flex items-center justify-between border-t border-gray-200 pt-6">
-                <dt className="text-base">المجموع</dt>
-                  <dd className="text-base">
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-t border-gray-200 pt-6">
+                <dt className="text-left text-base">Total</dt>
+                  <dd className="text-center text-base">
                     {formatDZD(orderTotal)}
                 </dd>
+                <span className="text-right text-base" dir="rtl">المجموع</span>
               </div>
             </dl>
           </div>

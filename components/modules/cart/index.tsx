@@ -100,23 +100,23 @@ export const CartModule = () => {
         aria-labelledby="summary-heading"
         className="mt-16 rounded-lg border border-gray-200 bg-transparent px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
       >
-        <h2
-          id="summary-heading"
-          className="text-lg font-medium text-gray-900"
-        >
-          عملية الطلب
+        <h2 id="summary-heading" className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-lg font-medium text-gray-900">
+          <span className="text-left">Summary of order</span>
+          <span className="text-center" dir="rtl">عملية الطلب</span>
+          <span aria-hidden="true" />
         </h2>
 
         <dl className="mt-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <dt className="text-sm text-gray-600">السعر</dt>
-            <dd className="text-sm font-medium text-gray-900">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+            <dt className="text-left text-sm text-gray-600">Price</dt>
+            <dd className="text-center text-sm font-medium text-gray-900">
               {formatDZD(total)}
             </dd>
+            <span className="text-right text-sm text-gray-600" dir="rtl">السعر</span>
           </div>
-          <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-            <dt className="flex items-center text-sm text-gray-600">
-              <span>سعر التوصيل</span>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-t border-gray-200 pt-4">
+            <dt className="flex items-center text-left text-sm text-gray-600">
+              <span>Shipping</span>
               <a
                 href="#"
                 className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
@@ -130,15 +130,15 @@ export const CartModule = () => {
                 />
               </a>
             </dt>
-            <dd className="text-sm font-medium text-gray-900">{formatDZD(shippingCost)}</dd>
+            <dd className="text-center text-sm font-medium text-gray-900">{formatDZD(shippingCost)}</dd>
+            <span className="text-right text-sm text-gray-600" dir="rtl">سعر التوصيل</span>
           </div>
-          <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-            <dt className="text-base font-medium text-gray-900">
-              المجموع
-            </dt>
-            <dd className="text-base font-medium text-gray-900">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-t border-gray-200 pt-4">
+            <dt className="text-left text-base font-medium text-gray-900">Total</dt>
+            <dd className="text-center text-base font-medium text-gray-900">
               {formatDZD(total === 0 ? 0 : Math.round(total + shippingCost))}
             </dd>
+            <span className="text-right text-base font-medium text-gray-900" dir="rtl">المجموع</span>
           </div>
         </dl>
         {products.length > 0 && (
