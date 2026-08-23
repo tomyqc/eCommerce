@@ -33,7 +33,9 @@ const DashboardSidebar = () => {
     { href: "/admin/categories", label: "Categories", icon: MdCategory },
     { href: "/admin/users", label: "Users", icon: FaRegUser },
     { href: "/admin/merchant", label: "Manage agents", permission: "agents", icon: FaStore },
+    { href: "/admin/settings", label: "Settings", icon: FaGear },
     { href: "/admin/settings", label: "Payment accounts", permission: "payment-settings", icon: FaGear },
+    { href: "/admin/settings", label: "Announcements", permission: "announcements", icon: FaGear },
   ];
 
   return (

@@ -12,17 +12,17 @@ const getSlot = (request: Request): string => {
   return value && /^[a-z0-9-]{2,40}$/.test(value) ? value : "edahabia";
 };
 
-const requireAdmin = async () => {
+const hasPaymentSettingsAccess = async () => {
   const session = (await getServerSession(authOptions)) as {
-    user?: { role?: string };
+    user?: { role?: string; permissions?: string[] };
   } | null;
 
-  return session?.user?.role === "admin";
+  return session?.user?.role === "admin" || session?.user?.permissions?.includes("payment-settings");
 };
 
 export async function POST(request: Request) {
-  if (!(await requireAdmin())) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (!(await hasPaymentSettingsAccess())) {
+    return NextResponse.json({ error: "Payment settings access required" }, { status: 403 });
   }
 
   const slot = getSlot(request);
@@ -64,8 +64,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!(await requireAdmin())) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (!(await hasPaymentSettingsAccess())) {
+    return NextResponse.json({ error: "Payment settings access required" }, { status: 403 });
   }
 
   const slot = getSlot(request);

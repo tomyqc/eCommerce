@@ -3,9 +3,10 @@ import { NextResponse } from "next/server";
 import prisma from "@/utils/db";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const requireAdmin = async () => {
+const hasPaymentSettingsAccess = async () => {
   const session = await getServerSession(authOptions);
-  return session?.user?.role === "admin";
+  const user = session?.user as { role?: string; permissions?: string[] } | undefined;
+  return user?.role === "admin" || user?.permissions?.includes("payment-settings");
 };
 
 export async function GET() {
@@ -14,7 +15,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  if (!(await requireAdmin())) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (!(await hasPaymentSettingsAccess())) return NextResponse.json({ error: "Payment settings access required" }, { status: 403 });
   const body = await request.json();
   const data = {
     ccpAccount: typeof body.ccpAccount === "string" && body.ccpAccount.trim() ? body.ccpAccount.trim().slice(0, 120) : null,
@@ -26,7 +27,7 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!(await requireAdmin())) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (!(await hasPaymentSettingsAccess())) return NextResponse.json({ error: "Payment settings access required" }, { status: 403 });
   const account = new URL(request.url).searchParams.get("account");
   if (account !== "ccp" && account !== "bank") return NextResponse.json({ error: "Invalid account" }, { status: 400 });
   const data = account === "ccp" ? { ccpAccount: null } : { bankAccount: null };

@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import prisma from "@/utils/db";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const isAdmin = async () => (await getServerSession(authOptions))?.user?.role === "admin";
+const hasAnnouncementAccess = async () => {
+  const session = await getServerSession(authOptions);
+  const user = session?.user as { role?: string; permissions?: string[] } | undefined;
+  return user?.role === "admin" || user?.permissions?.includes("announcements");
+};
 
 export async function GET() {
   const announcements = await prisma.announcement.findMany({ orderBy: { createdAt: "asc" } });
@@ -11,7 +15,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (!(await hasAnnouncementAccess())) return NextResponse.json({ error: "Announcement access required" }, { status: 403 });
   const formData = await request.formData();
   const file = formData.get("file");
   const title = String(formData.get("title") || "").trim() || null;
@@ -23,7 +27,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (!(await hasAnnouncementAccess())) return NextResponse.json({ error: "Announcement access required" }, { status: 403 });
   const id = new URL(request.url).searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Announcement id is required" }, { status: 400 });
   await prisma.announcement.delete({ where: { id } });

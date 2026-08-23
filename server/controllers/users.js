@@ -9,7 +9,7 @@ function excludePassword(user) {
   return userWithoutPassword;
 }
 
-const allowedPermissions = ["dashboard", "orders", "products", "categories", "bulk-upload", "payment-settings", "agents"];
+const allowedPermissions = ["dashboard", "orders", "products", "categories", "bulk-upload", "payment-settings", "announcements", "agents"];
 const isValidPassword = (password) => typeof password === "string" && password.length >= 10 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password);
 function cleanPermissions(permissions) {
   if (!Array.isArray(permissions)) return null;
