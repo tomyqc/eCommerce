@@ -66,7 +66,7 @@ const ProductImageCarousel = ({
         <img
           src={getProductImageUrl(images[currentIndex])}
           alt={`${title} photo ${currentIndex + 1}`}
-          className={`${imageClassName} pointer-events-none select-none bg-white`}
+          className={`${imageClassName} pointer-events-none select-none`}
           onError={(event) => {
             event.currentTarget.src = "/product_placeholder.jpg";
           }}
