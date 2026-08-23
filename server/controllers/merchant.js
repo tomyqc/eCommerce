@@ -1,5 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../utills/db");
 const bcrypt = require("bcryptjs");
 
 const isValidPassword = (password) => typeof password === "string" && password.length >= 10 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password);
@@ -49,20 +48,21 @@ async function createMerchant(request, response) {
     }
     const existingUser = await prisma.user.findFirst({ where: { OR: [{ phone: phone.trim() }, email ? { email } : { id: "__none__" }] } });
     if (existingUser) return response.status(409).json({ error: "An agent with this phone or email already exists" });
-    const user = await prisma.user.create({ data: { name: name.trim(), email: email || null, phone: phone.trim(), password: await bcrypt.hash(password, 14), role: grade || "seller", permissions: Array.isArray(permissions) ? permissions : [] } });
-
-    const merchant = await prisma.merchant.create({
-      data: {
-        name,
-        email,
-        phone,
-        address,
-        description,
-        status: status || "ACTIVE",
-        grade: grade || "seller",
-        permissions: Array.isArray(permissions) ? permissions : [],
-        userId: user.id,
-      },
+    const merchant = await prisma.$transaction(async (transaction) => {
+      const user = await transaction.user.create({ data: { name: name.trim(), email: email || null, phone: phone.trim(), password: await bcrypt.hash(password, 14), role: grade || "seller", permissions: Array.isArray(permissions) ? permissions : [] } });
+      return transaction.merchant.create({
+        data: {
+          name: name.trim(),
+          email: email || null,
+          phone: phone.trim(),
+          address: address || null,
+          description: description || null,
+          status: status || "ACTIVE",
+          grade: grade || "seller",
+          permissions: Array.isArray(permissions) ? permissions : [],
+          userId: user.id,
+        },
+      });
     });
 
     return response.status(201).json(merchant);
