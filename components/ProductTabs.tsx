@@ -51,7 +51,7 @@ const ProductTabs = ({ product }: { product: Product }) => {
 
         {currentProductTab === 1 && (
           <div className="overflow-x-auto">
-            <table className="table text-xl text-center max-[500px]:text-base">
+            <table className="table bg-transparent text-xl text-center max-[500px]:text-base">
               <tbody>
                 {/* row 1 */}
                 <tr>

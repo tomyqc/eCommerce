@@ -31,7 +31,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-transparent">
       <div className="max-w-screen-2xl mx-auto">
         <div className="flex justify-center gap-x-16 pt-10 max-lg:flex-col items-center gap-y-5 px-5">
           <div>
