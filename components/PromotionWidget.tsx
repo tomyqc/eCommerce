@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import apiClient from "@/lib/api";
 import Heading from "@/components/Heading";
 import { getProductImageUrl } from "@/lib/product-image";
 
@@ -23,7 +22,7 @@ const PromotionWidget = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    apiClient.get("/api/products", { cache: "no-store" }).then(async (response) => {
+    fetch("/api/products", { cache: "no-store" }).then(async (response) => {
       if (!response.ok) return;
       const data = await response.json();
       setProducts((Array.isArray(data) ? data : []).filter((product) => product.isNew || product.isSold || (product.couponCode && product.couponPercent > 0)));

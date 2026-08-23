@@ -12,7 +12,7 @@
 import React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const Pagination = () => {
+const Pagination = ({ totalPages = 1 }: { totalPages?: number }) => {
   // getting from Zustand store current page and methods for incrementing and decrementing current page
   const router = useRouter();
   const pathname = usePathname();
@@ -26,13 +26,13 @@ const Pagination = () => {
   };
   return (
     <div className="join flex justify-center py-16">
-      <button
+      {page < totalPages && <button
         className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500"
         onClick={() => navigateToPage(page - 1)}
         disabled={page === 1}
       >
         «
-      </button>
+      </button>}
       <button className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500">
         Page {page}
       </button>

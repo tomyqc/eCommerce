@@ -10,17 +10,13 @@
 
 import React from "react";
 import Heading from "./Heading";
-import apiClient from "@/lib/api";
 import CategoryCarousel from "./CategoryCarousel";
+import prisma from "@/utils/db";
 
 const CategoryMenu = async () => {
   let categories: Category[] = [];
   try {
-    const response = await apiClient.get("/api/categories");
-    if (response.ok) {
-      const data = await response.json();
-      categories = Array.isArray(data) ? data : [];
-    }
+    categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
   } catch {
     categories = [];
   }

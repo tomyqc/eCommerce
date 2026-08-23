@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { sanitize } from "@/lib/sanitize";
 import apiClient from "@/lib/api";
+import prisma from "@/utils/db";
 
 // improve readabillity of category text, for example category text "smart-watches" will be "smart watches"
 const improveCategoryText = (text: string): string => {
@@ -32,6 +33,7 @@ const ShopPage = async ({ params, searchParams }: { params: Promise<{ slug?: str
   const awaitedParams = await params;
   const awaitedSearchParams = await searchParams;
   const categorySlug = awaitedParams?.slug?.[0] ? improveCategoryText(awaitedParams.slug[0]) : "";
+  const totalProducts = await prisma.product.count({ where: categorySlug ? { category: { name: categorySlug } } : undefined });
   
   return (
     <div className="text-black bg-white">
@@ -50,7 +52,7 @@ const ShopPage = async ({ params, searchParams }: { params: Promise<{ slug?: str
             </div>
             <div className="divider"></div>
             <Products params={awaitedParams} searchParams={awaitedSearchParams} />
-            <Pagination />
+            <Pagination totalPages={Math.max(1, Math.ceil(totalProducts / 9))} />
           </div>
         </div>
       </div>

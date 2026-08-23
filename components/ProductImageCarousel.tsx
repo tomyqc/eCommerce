@@ -40,7 +40,7 @@ const ProductImageCarousel = ({
       setImages([
         ...(mainImage ? [mainImage] : []),
         ...relatedImages.map((item) => item.image),
-      ].filter((image, index, allImages) => allImages.indexOf(image) === index).slice(0, 5));
+      ].filter((image, index, allImages) => allImages.indexOf(image) === index).slice(0, 10));
     }).catch(() => undefined);
 
     return () => {

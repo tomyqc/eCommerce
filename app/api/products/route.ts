@@ -13,12 +13,16 @@ export async function GET(request: Request) {
     : sort === "lowPrice" ? { price: "asc" as const }
     : sort === "highPrice" ? { price: "desc" as const }
     : undefined;
-  const products = await prisma.product.findMany({
-    where: category ? { category: { name: category } } : undefined,
+  const where = category ? { category: { name: category } } : undefined;
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+    where,
     skip: (page - 1) * 9,
     take: 9,
     include: { category: { select: { name: true } } },
     orderBy,
-  });
-  return NextResponse.json(products);
+    }),
+    prisma.product.count({ where }),
+  ]);
+  return NextResponse.json(products, { headers: { "X-Total-Count": String(total), "X-Total-Pages": String(Math.max(1, Math.ceil(total / 9))) } });
 }

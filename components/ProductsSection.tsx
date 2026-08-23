@@ -11,23 +11,13 @@
 import React from "react";
 import ProductItem from "./ProductItem";
 import Heading from "./Heading";
-import apiClient from "@/lib/api";
+import prisma from "@/utils/db";
 
 const ProductsSection = async () => {
-  let products = [];
+  let products: any[] = [];
   
   try {
-    // sending API request for getting all products
-    const data = await apiClient.get("/api/products?mode=home", { cache: "no-store" });
-    
-    if (!data.ok) {
-      console.error('Failed to fetch products:', data.statusText);
-      products = [];
-    } else {
-      const result = await data.json();
-      // Ensure products is an array
-      products = Array.isArray(result) ? result : [];
-    }
+    products = await prisma.product.findMany({ orderBy: { id: "asc" }, include: { category: { select: { name: true } } } });
   } catch (error) {
     console.error('Error fetching products:', error);
     products = [];
@@ -39,7 +29,7 @@ const ProductsSection = async () => {
         <Heading title="Products المنتوجات" className="mt-5" />
         <div className="mx-auto grid w-full grid-cols-5 justify-items-center gap-x-1 gap-y-5 px-2 py-5">
           {products.length > 0 ? (
-            products.map((product: any) => (
+            products.map((product: Product) => (
               <ProductItem key={product.id} product={product} color="black" />
             ))
           ) : (
