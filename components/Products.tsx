@@ -10,12 +10,13 @@
 
 import React from "react";
 import ProductItem from "./ProductItem";
+import prisma from "@/utils/db";
 
 const Products = async ({ params, searchParams }: { params: { slug?: string[] }, searchParams: { [key: string]: string | string[] | undefined } }) => {
   // getting all data from URL slug and preparing everything for sending GET request
   const page = searchParams?.page ? Number(searchParams?.page) : 1;
 
-  let products = [];
+  let products: any[] = [];
   let categoryName = "";
   if (params?.slug?.[0]) {
     try {
@@ -26,17 +27,19 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
   }
 
   try {
-    const categoryFilter = categoryName ? `&category=${encodeURIComponent(categoryName)}` : "";
-    // sending API request with filtering, sorting and pagination for getting all products
-    const data = await fetch(`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/products?page=${page}&sort=${searchParams?.sort || ""}${categoryFilter}`, { cache: "no-store" });
-
-    if (!data.ok) {
-      console.error('Failed to fetch products:', data.statusText);
-      products = [];
-    } else {
-      const result = await data.json();
-      products = Array.isArray(result) ? result : [];
-    }
+    const sort = typeof searchParams?.sort === "string" ? searchParams.sort : "";
+    const orderBy = sort === "titleAsc" ? { title: "asc" as const }
+      : sort === "titleDesc" ? { title: "desc" as const }
+      : sort === "lowPrice" ? { price: "asc" as const }
+      : sort === "highPrice" ? { price: "desc" as const }
+      : { id: "asc" as const };
+    products = await prisma.product.findMany({
+      where: categoryName ? { category: { name: categoryName } } : undefined,
+      skip: (page - 1) * 9,
+      take: 9,
+      include: { category: { select: { name: true } } },
+      orderBy,
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     products = [];

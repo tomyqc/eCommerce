@@ -12,21 +12,21 @@
 import React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const Pagination = ({ totalPages = 1 }: { totalPages?: number }) => {
+const Pagination = ({ totalPages = 1, queryKey = "page" }: { totalPages?: number; queryKey?: string }) => {
   // getting from Zustand store current page and methods for incrementing and decrementing current page
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const page = Math.max(1, Number(searchParams.get(queryKey)) || 1);
   const navigateToPage = (nextPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (nextPage === 1) params.delete("page");
-    else params.set("page", String(nextPage));
+    if (nextPage === 1) params.delete(queryKey);
+    else params.set(queryKey, String(nextPage));
     router.push(`${pathname}${params.toString() ? `?${params}` : ""}`);
   };
   return (
     <div className="join flex justify-center py-16">
-      {page < totalPages && <button
+      {page > 1 && <button
         className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500"
         onClick={() => navigateToPage(page - 1)}
         disabled={page === 1}
@@ -36,12 +36,12 @@ const Pagination = ({ totalPages = 1 }: { totalPages?: number }) => {
       <button className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500">
         Page {page}
       </button>
-      <button
+      {page < totalPages && <button
         className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500"
         onClick={() => navigateToPage(page + 1)}
       >
         »
-      </button>
+      </button>}
     </div>
   );
 };

@@ -9,7 +9,6 @@ import {
 } from "@/components";
 import React from "react";
 import { sanitize } from "@/lib/sanitize";
-import apiClient from "@/lib/api";
 import prisma from "@/utils/db";
 
 // improve readabillity of category text, for example category text "smart-watches" will be "smart watches"

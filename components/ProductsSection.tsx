@@ -12,12 +12,13 @@ import React from "react";
 import ProductItem from "./ProductItem";
 import Heading from "./Heading";
 import prisma from "@/utils/db";
+import Pagination from "./Pagination";
 
-const ProductsSection = async () => {
+const ProductsSection = async ({ page = 1, totalPages = 1 }: { page?: number; totalPages?: number }) => {
   let products: any[] = [];
   
   try {
-    products = await prisma.product.findMany({ orderBy: { id: "asc" }, include: { category: { select: { name: true } } } });
+    products = await prisma.product.findMany({ orderBy: { id: "asc" }, skip: (page - 1) * 15, take: 15, include: { category: { select: { name: true } } } });
   } catch (error) {
     console.error('Error fetching products:', error);
     products = [];
@@ -38,6 +39,7 @@ const ProductsSection = async () => {
             </div>
           )}
         </div>
+        <Pagination totalPages={totalPages} queryKey="homePage" />
       </div>
     </div>
   );
