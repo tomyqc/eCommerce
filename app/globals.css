@@ -104,6 +104,12 @@ body::before {
   background-attachment: fixed;
 }
 
+input.input,
+textarea.textarea,
+select {
+  background-color: transparent;
+}
+
 .range{
     --range-shdw: #3B82F6;
 }
