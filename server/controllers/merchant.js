@@ -47,7 +47,10 @@ async function createMerchant(request, response) {
       return response.status(400).json({ error: "Name, phone, and a password with 10+ characters, uppercase, lowercase, and number are required" });
     }
     const existingUser = await prisma.user.findFirst({ where: { OR: [{ phone: phone.trim() }, email ? { email } : { id: "__none__" }] } });
-    if (existingUser) return response.status(409).json({ error: "An agent with this phone or email already exists" });
+    if (existingUser) {
+      const conflict = existingUser.email === email ? "email" : "phone number";
+      return response.status(409).json({ error: `That ${conflict} is already assigned to ${existingUser.name || "another agent"}. Use a different ${conflict}.` });
+    }
     const merchant = await prisma.$transaction(async (transaction) => {
       const user = await transaction.user.create({ data: { name: name.trim(), email: email || null, phone: phone.trim(), password: await bcrypt.hash(password, 14), role: grade || "seller", permissions: Array.isArray(permissions) ? permissions : [] } });
       return transaction.merchant.create({
@@ -105,22 +108,15 @@ async function deleteMerchant(request, response) {
   try {
     const { id } = request.params;
     
-    // Check if merchant has products before deletion
     const merchant = await prisma.merchant.findUnique({
       where: { id },
       include: { products: true },
     });
 
-    if (merchant?.products.length > 0) {
-      return response.status(400).json({
-        error: "Cannot delete merchant with existing products",
-      });
-    }
-
-    await prisma.merchant.delete({
-      where: {
-        id: id,
-      },
+    if (!merchant) return response.status(404).json({ error: "Merchant not found" });
+    await prisma.$transaction(async (transaction) => {
+      await transaction.merchant.delete({ where: { id } });
+      if (merchant.userId) await transaction.user.delete({ where: { id: merchant.userId } });
     });
 
     return response.status(204).send();

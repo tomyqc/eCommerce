@@ -36,8 +36,8 @@ model Product {
   customerOrders customer_order_product[]
   Wishlist       Wishlist[]
 
-  merchantId     String
-  merchant       Merchant @relation(fields: [merchantId], references: [id])
+  merchantId     String?
+  merchant       Merchant? @relation(fields: [merchantId], references: [id], onDelete: SetNull)
   // Back relation for bulk upload items
   bulkUploadItems bulk_upload_item[]      @relation("ProductBulkItems")
 }

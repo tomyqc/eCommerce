@@ -11,7 +11,7 @@ interface Product {
   color?: string | null;
   variantPrices?: Record<string, number> | null;
   categoryId: string;
-  merchantId: string;
+  merchantId: string | null;
   category: {name: string}?;
   inStock: number;
   quantity: number;
