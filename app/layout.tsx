@@ -8,7 +8,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Providers from "@/Providers";
 import SessionTimeoutWrapper from "@/components/SessionTimeoutWrapper";
-import prisma from "@/utils/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +27,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession();
-  const siteSettings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png" }, update: {} });
+  let siteSettings = { logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png", backgroundOpacity: 0.2 };
+  if (process.env.DATABASE_URL) {
+    try {
+      const { default: prisma } = await import("@/utils/db");
+      siteSettings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { logoPath: siteSettings.logoPath, backgroundPath: siteSettings.backgroundPath }, update: {} });
+    } catch {
+      // Keep the default visual settings when the database is unavailable.
+    }
+  }
   return (
     <html lang="en" data-theme="light">
       <body className={inter.className} style={{ "--site-background-image": `url("${siteSettings.backgroundPath}")`, "--site-background-opacity": siteSettings.backgroundOpacity } as React.CSSProperties}>
