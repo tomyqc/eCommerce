@@ -98,7 +98,7 @@ export const CartModule = () => {
       {/* Order summary */}
       <section
         aria-labelledby="summary-heading"
-        className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+        className="mt-16 rounded-lg border border-gray-200 bg-transparent px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
       >
         <h2
           id="summary-heading"
@@ -145,7 +145,7 @@ export const CartModule = () => {
           <div className="mt-6">
             <Link
               href="/checkout"
-              className="block flex justify-center items-center w-full uppercase bg-white px-4 py-3 text-base border border-black border-gray-300 font-bold text-blue-600 shadow-sm hover:bg-black hover:bg-gray-100 focus:outline-none focus:ring-2"
+              className="block flex justify-center items-center w-full uppercase bg-transparent px-4 py-3 text-base border border-black border-gray-300 font-bold text-blue-600 shadow-sm hover:bg-black hover:bg-gray-100 focus:outline-none focus:ring-2"
             >
               <span>Checkout</span>
             </Link>
