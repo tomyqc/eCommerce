@@ -52,9 +52,9 @@ body::before {
   inset: 0;
   z-index: 100;
   pointer-events: none;
-  opacity: 0.2;
+  opacity: var(--site-background-opacity, 0.2);
   mix-blend-mode: multiply;
-  background-image: url("/ChatGPT%20Image%20Aug%2020,%202026,%2001_07_50%20PM.png");
+  background-image: var(--site-background-image, url("/ChatGPT%20Image%20Aug%2020,%202026,%2001_07_50%20PM.png"));
   background-position: center;
   background-size: cover;
   background-attachment: fixed;

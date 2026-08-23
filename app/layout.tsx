@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Providers from "@/Providers";
 import SessionTimeoutWrapper from "@/components/SessionTimeoutWrapper";
+import prisma from "@/utils/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,9 +28,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession();
+  const siteSettings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: {}, update: {} });
   return (
     <html lang="en" data-theme="light">
-      <body className={inter.className}>
+      <body className={inter.className} style={{ "--site-background-image": `url("${siteSettings.backgroundPath}")`, "--site-background-opacity": siteSettings.backgroundOpacity } as React.CSSProperties}>
         <SessionProvider session={session}>
           <SessionTimeoutWrapper />
           <Header />

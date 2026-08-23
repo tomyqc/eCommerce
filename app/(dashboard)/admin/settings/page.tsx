@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import apiClient from "@/lib/api";
 import { convertCategoryNameToURLFriendly } from "../../../../utils/categoryFormating";
 import BottomPagesManager from "@/components/BottomPagesManager";
+import { FaShapes } from "react-icons/fa6";
 
 const SettingsPage = () => {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -21,6 +22,8 @@ const SettingsPage = () => {
   const [pubUploading, setPubUploading] = useState<string | null>(null);
   const [paymentAccountsOpen, setPaymentAccountsOpen] = useState(false);
   const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "", shippingCost: 5 });
+  const [brandingOpen, setBrandingOpen] = useState(false);
+  const [branding, setBranding] = useState({ logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png", backgroundOpacity: 0.2 });
 
   const loadPubs = async () => {
     const response = await fetch("/api/pubs", { cache: "no-store" });
@@ -65,6 +68,19 @@ const SettingsPage = () => {
     if (response.ok) { setPaymentAccounts((current) => ({ ...current, [account === "ccp" ? "ccpAccount" : "bankAccount"]: "" })); toast.success("Payment account removed"); }
     else toast.error("Payment account could not be removed");
   };
+
+  const loadBranding = async () => { const response = await fetch("/api/site-settings", { cache: "no-store" }); if (response.ok) setBranding(await response.json()); };
+  const uploadBranding = async (kind: "logo" | "background", file: File | undefined) => {
+    if (!file) return;
+    const formData = new FormData(); formData.append("kind", kind); formData.append("file", file);
+    const response = await fetch("/api/site-settings", { method: "POST", body: formData });
+    if (response.ok) { setBranding(await response.json()); toast.success(`${kind} updated`); } else toast.error("Branding update failed");
+  };
+  const resetBranding = async (kind: "logo" | "background") => {
+    const response = await fetch(`/api/site-settings?kind=${kind}`, { method: "DELETE" });
+    if (response.ok) { setBranding(await response.json()); toast.success(`${kind} restored`); } else toast.error("Branding restore failed");
+  };
+  const saveOpacity = async () => { const response = await fetch("/api/site-settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ backgroundOpacity: branding.backgroundOpacity }) }); if (response.ok) { setBranding(await response.json()); toast.success("Background opacity saved"); } };
 
   const loadCategories = async () => {
     const response = await apiClient.get("/api/categories");
@@ -188,7 +204,7 @@ const SettingsPage = () => {
       <main className="flex flex-col gap-y-6 w-full p-5">
         <h1 className="text-3xl font-semibold">Settings</h1>
         <button type="button" className="btn btn-primary w-fit" onClick={() => { setCategoriesOpen(!categoriesOpen); if (!categoriesOpen) loadCategories(); }}>
-          {categoriesOpen ? "Close categories" : "Manage categories"}
+          {categoriesOpen ? "Close categories" : <><FaShapes aria-hidden="true" /> Manage categories</>}
         </button>
         {categoriesOpen && <section className="flex flex-col gap-y-4 max-w-xl border border-gray-200 p-6">
           <h2 className="text-xl font-semibold">Categories</h2>
@@ -206,7 +222,7 @@ const SettingsPage = () => {
           ))}
         </section>}
         <button type="button" className="btn btn-primary w-fit" onClick={() => { setPubsOpen(!pubsOpen); if (!pubsOpen) loadPubs(); }}>
-          {pubsOpen ? "Close Pubs" : "Pubs"}
+          {pubsOpen ? "Close manage pubs" : "Manage pubs"}
         </button>
         {pubsOpen && <section className="flex max-w-4xl flex-col gap-y-4 border border-gray-200 p-6">
           <h2 className="text-xl font-semibold">Pubs</h2>
@@ -225,8 +241,8 @@ const SettingsPage = () => {
             </div>)}
           </div>
         </section>}
-        <button type="button" className="btn btn-primary w-fit" onClick={() => { setPaymentLogosOpen(!paymentLogosOpen); if (!paymentLogosOpen) loadLogos(); }}>
-          {paymentLogosOpen ? "Close payment logos" : "Manage payment logos"}
+        <button type="button" className="btn btn-primary w-fit" onClick={() => { setPaymentLogosOpen(!paymentLogosOpen); if (!paymentLogosOpen) { loadLogos(); loadPaymentAccounts(); } }}>
+          {paymentLogosOpen ? "Close payment methods" : "Manage payment methods"}
         </button>
         {paymentLogosOpen && <div className="flex flex-col gap-y-4">
           <p className="text-gray-600">Replace, add, or delete payment logos using SVG, PNG, JPG, or JPEG files.</p>
@@ -249,10 +265,7 @@ const SettingsPage = () => {
             <input className="file-input file-input-bordered mt-5 w-full max-w-sm" type="file" accept="image/svg+xml,image/png,image/jpeg,.svg,.png,.jpg,.jpeg" disabled={uploading !== null} onChange={(event) => addLogo(event.target.files?.[0])} />
           </div>}
         </div>}
-        <button type="button" className="btn btn-primary w-fit" onClick={() => { setPaymentAccountsOpen(!paymentAccountsOpen); if (!paymentAccountsOpen) loadPaymentAccounts(); }}>
-          {paymentAccountsOpen ? "Close payment accounts" : "Manage payment accounts"}
-        </button>
-        {paymentAccountsOpen && <section className="flex max-w-xl flex-col gap-y-4 border border-gray-200 p-6">
+        {paymentLogosOpen && <section className="flex max-w-xl flex-col gap-y-4 border border-gray-200 p-6">
           <h2 className="text-xl font-semibold">CCP and bank transfer accounts</h2>
           <p className="text-sm text-gray-600">These details appear to buyers only after they choose online payment. Leave them blank until verified.</p>
           <label className="form-control"><span className="label-text">CCP / BaridiMob account</span><input className="input input-bordered" value={paymentAccounts.ccpAccount} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, ccpAccount: event.target.value })} placeholder="CCP account and RIP" /></label>
@@ -261,6 +274,15 @@ const SettingsPage = () => {
           <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("bank")}>Delete bank account</button>
           <label className="form-control"><span className="label-text">Shipping price</span><input className="input input-bordered" type="number" min="0" step="1" value={paymentAccounts.shippingCost} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, shippingCost: Math.max(0, Number(event.target.value) || 0) })} placeholder="5" /></label>
           <button type="button" className="btn btn-primary w-fit" onClick={savePaymentAccounts}>Save payment accounts</button>
+        </section>}
+        <button type="button" className="btn btn-primary w-fit" onClick={() => { setBrandingOpen(!brandingOpen); if (!brandingOpen) loadBranding(); }}>
+          {brandingOpen ? "Close Manage Logo" : "Manage Logo"}
+        </button>
+        {brandingOpen && <section className="flex max-w-xl flex-col gap-y-5 border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold">Website logo and background</h2>
+          <div><img src={branding.logoPath} alt="Current website logo" className="h-20 w-48 object-contain" /><p className="mt-2 font-medium">Website logo</p><input className="file-input file-input-bordered mt-2 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("logo", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("logo")}>Restore Logo.png</button></div>
+          <div><img src={branding.backgroundPath} alt="Current website background" className="h-32 w-full object-cover" /><p className="mt-2 font-medium">Website background</p><input className="file-input file-input-bordered mt-2 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("background", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("background")}>Restore background</button></div>
+          <label className="form-control"><span className="label-text">Background opacity: {Math.round(branding.backgroundOpacity * 100)}%</span><input type="range" min="0" max="1" step="0.05" value={branding.backgroundOpacity} onChange={(event) => setBranding({ ...branding, backgroundOpacity: Number(event.target.value) })} /><button type="button" className="btn btn-primary mt-2 w-fit" onClick={saveOpacity}>Save opacity</button></label>
         </section>}
         <BottomPagesManager />
       </main>

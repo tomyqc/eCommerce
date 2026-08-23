@@ -157,6 +157,14 @@ model PaymentSettings {
   updatedAt   DateTime @updatedAt
 }
 
+model SiteSettings {
+  id               String   @id @default("default")
+  logoPath         String   @default("/Logo.png")
+  backgroundPath   String   @default("/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png")
+  backgroundOpacity Float   @default(0.2)
+  updatedAt        DateTime @updatedAt
+}
+
 model BottomPage {
   id        String   @id @default(uuid())
   section   String
