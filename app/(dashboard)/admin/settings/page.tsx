@@ -24,6 +24,10 @@ const SettingsPage = () => {
   const [paymentAccountsOpen, setPaymentAccountsOpen] = useState(false);
   const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "", shippingCost: 5 });
   const [brandingOpen, setBrandingOpen] = useState(false);
+  const [announcementsOpen, setAnnouncementsOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState<{ id: string; title: string | null; media: string; mediaType: "image" | "video" }[]>([]);
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementUploading, setAnnouncementUploading] = useState(false);
   const [branding, setBranding] = useState({ logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png", backgroundOpacity: 0.2 });
 
   const loadPubs = async () => {
@@ -82,6 +86,16 @@ const SettingsPage = () => {
     if (response.ok) { setBranding(await response.json()); toast.success(`${kind} restored`); } else toast.error("Branding restore failed");
   };
   const saveOpacity = async () => { const response = await fetch("/api/site-settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ backgroundOpacity: branding.backgroundOpacity }) }); if (response.ok) { setBranding(await response.json()); toast.success("Background opacity saved"); } };
+  const loadAnnouncements = async () => { const response = await fetch("/api/announcements", { cache: "no-store" }); if (response.ok) setAnnouncements(await response.json()); };
+  const uploadAnnouncement = async (file?: File) => {
+    if (!file) return;
+    setAnnouncementUploading(true);
+    const formData = new FormData(); formData.append("file", file); formData.append("title", announcementTitle);
+    const response = await fetch("/api/announcements", { method: "POST", body: formData });
+    setAnnouncementUploading(false);
+    if (response.ok) { setAnnouncementTitle(""); toast.success("Announcement added"); await loadAnnouncements(); } else toast.error((await response.json()).error || "Announcement upload failed");
+  };
+  const deleteAnnouncement = async (id: string) => { const response = await fetch(`/api/announcements?id=${id}`, { method: "DELETE" }); if (response.ok) { toast.success("Announcement deleted"); await loadAnnouncements(); } else toast.error("Announcement deletion failed"); };
 
   const loadCategories = async () => {
     const response = await apiClient.get("/api/categories");
@@ -283,6 +297,14 @@ const SettingsPage = () => {
           <h2 className="text-xl font-semibold">Website logo and background</h2>
           <div><h2 className="text-xl font-semibold">Website logo</h2><img src={branding.logoPath} alt="Current website logo" className="mt-3 h-24 w-full object-contain" /><input className="file-input file-input-bordered mt-3 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("logo", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("logo")}>Restore logo</button></div>
           <div><h2 className="text-xl font-semibold">Website background photo</h2><img src={branding.backgroundPath} alt="Current website background photo" className="mt-3 h-40 w-full object-cover" /><p className="mt-2 text-sm text-gray-600">Current uploaded background photo</p><input className="file-input file-input-bordered mt-3 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("background", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("background")}>Restore background</button><label className="form-control mt-4"><span className="label-text">Background opacity: {Math.round(branding.backgroundOpacity * 100)}%</span><input type="range" min="0" max="1" step="0.05" value={branding.backgroundOpacity} onChange={(event) => setBranding({ ...branding, backgroundOpacity: Number(event.target.value) })} /><button type="button" className="btn btn-primary mt-2 w-fit" onClick={saveOpacity}>Save opacity</button></label></div>
+        </section>}
+        <button type="button" className="btn btn-primary w-fit" onClick={() => { setAnnouncementsOpen(!announcementsOpen); if (!announcementsOpen) loadAnnouncements(); }}>
+          {announcementsOpen ? "Close manage announcements" : "Manage announcements"}
+        </button>
+        {announcementsOpen && <section className="flex max-w-5xl flex-col gap-5 border border-gray-200 p-6">
+          <div><h2 className="text-xl font-semibold">Announcements</h2><p className="mt-2 text-gray-600">Add unlimited app promotions, product promotions, and announcements. Images and videos use the same single-item animation as New Products.</p></div>
+          <div className="flex flex-wrap gap-3"><input className="input input-bordered" placeholder="Optional title" value={announcementTitle} onChange={(event) => setAnnouncementTitle(event.target.value)} /><label className="btn btn-primary">Add photo or video<input className="hidden" type="file" accept="image/*,video/*" disabled={announcementUploading} onChange={(event) => uploadAnnouncement(event.target.files?.[0])} /></label></div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{announcements.map((item) => <div className="border border-gray-200 p-4" key={item.id}>{item.mediaType === "video" ? <video src={item.media} controls className="h-40 w-full object-contain" /> : <img src={item.media} alt={item.title || "Announcement"} className="h-40 w-full object-contain" />}<p className="mt-2 font-semibold">{item.title || "Untitled announcement"}</p><button type="button" className="btn btn-sm btn-error mt-3" onClick={() => deleteAnnouncement(item.id)}>Delete</button></div>)}</div>
         </section>}
         <BottomPagesManager />
       </main>

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { bottomPageSectionLabels } from "@/lib/bottom-page-config";
 import React, { useEffect, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa6";
+import { FaAndroid } from "react-icons/fa";
 
 type FooterPage = {
   id: string;
@@ -136,6 +137,9 @@ const Footer = () => {
             </a>
             <a href="https://www.tiktok.com/" target="_blank" rel="noreferrer" aria-label="Aiden Store on TikTok" title="TikTok" className="text-2xl text-black transition hover:text-gray-600">
               <FaTiktok aria-hidden="true" />
+            </a>
+            <a href="/aiden-store.apk" download aria-label="Download the Aiden Store Android app" title="Download Android app" className="text-2xl text-green-600 transition hover:text-green-800">
+              <FaAndroid aria-hidden="true" />
             </a>
           </div>
         </div>

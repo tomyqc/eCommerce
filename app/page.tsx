@@ -1,4 +1,4 @@
-import { CategoryMenu, Hero, IntroducingSection, ProductsSection, ProductPhotoWidget, PromotionWidget, ReviewsSection } from "@/components";
+import { AnnouncementsWidget, CategoryMenu, Hero, IntroducingSection, ProductsSection, ProductPhotoWidget, PromotionWidget, ReviewsSection } from "@/components";
 
 export const dynamic = "force-dynamic";
 
@@ -7,6 +7,7 @@ export default function Home() {
     <>
     <Hero />
     <ProductPhotoWidget />
+    <AnnouncementsWidget />
     <IntroducingSection />
     <PromotionWidget />
     <CategoryMenu />

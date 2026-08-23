@@ -170,6 +170,15 @@ model SiteSettings {
   updatedAt        DateTime @updatedAt
 }
 
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String?
+  media     String   @db.LongText
+  mediaType String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model BottomPage {
   id        String   @id @default(uuid())
   section   String
