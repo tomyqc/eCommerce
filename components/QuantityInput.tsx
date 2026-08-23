@@ -31,8 +31,8 @@ const QuantityInput = ({quantityCount, setQuantityCount} : QuantityInputProps) =
   };
 
   return (
-    <div className="flex items-center gap-x-4 max-[500px]:justify-center">
-      <p className="text-xl">Quantity: </p>
+    <div className="grid w-full max-w-md grid-cols-[1fr_auto_1fr] items-center gap-3 text-xl max-[500px]:gap-2">
+      <p className="text-left">Quantity:</p>
 
       <div className="flex items-center gap-1">
         <button
@@ -59,6 +59,7 @@ const QuantityInput = ({quantityCount, setQuantityCount} : QuantityInputProps) =
           <FaPlus />
         </button>
       </div>
+      <p className="text-right" dir="rtl">الكمية</p>
     </div>
   );
 };

@@ -26,14 +26,18 @@ const SingleProductDynamicFields = ({ product }: { product: Product }) => {
   const selectedPrice = getVariantPrice(product.price, selectedSize, product.variantPrices);
   return (
     <>
-      <DiscountedPrice price={selectedPrice} couponPercent={product.couponPercent} className="text-xl font-semibold" />
+      <div className="grid w-full max-w-md grid-cols-[1fr_auto_1fr] items-center gap-3 text-xl max-[500px]:gap-2">
+        <span className="text-left">Price:</span>
+        <DiscountedPrice price={selectedPrice} couponPercent={product.couponPercent} className="text-center font-semibold" />
+        <span className="text-right" dir="rtl">السعر:</span>
+      </div>
       <QuantityInput
         quantityCount={quantityCount}
         setQuantityCount={setQuantityCount}
       />
-      {(sizes.length > 0 || colors.length > 0) && <div className="flex flex-wrap gap-4">
-        {sizes.length > 0 && <label className="form-control"><span className="label-text">Size:</span><select className="select select-bordered" value={selectedSize} onChange={(event) => setSelectedSize(event.target.value)}>{sizes.map((size) => <option key={size}>{size}</option>)}</select></label>}
-        {colors.length > 0 && <label className="form-control"><span className="label-text">Color:</span><select className="select select-bordered" value={selectedColor} onChange={(event) => setSelectedColor(event.target.value)}>{colors.map((color) => <option key={color}>{color}</option>)}</select></label>}
+      {(sizes.length > 0 || colors.length > 0) && <div className="flex w-full max-w-md flex-col gap-3">
+        {colors.length > 0 && <label className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xl max-[500px]:gap-2"><span className="text-left">Color:</span><select className="select select-bordered" value={selectedColor} onChange={(event) => setSelectedColor(event.target.value)}>{colors.map((color) => <option key={color}>{color}</option>)}</select><span className="text-right" dir="rtl">اللون</span></label>}
+        {sizes.length > 0 && <label className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-xl max-[500px]:gap-2"><span className="text-left">Size:</span><select className="select select-bordered" value={selectedSize} onChange={(event) => setSelectedSize(event.target.value)}>{sizes.map((size) => <option key={size}>{size}</option>)}</select><span className="text-right" dir="rtl">الحجم</span></label>}
       </div>}
       {Boolean(product.inStock) && (
         <div className="flex gap-x-5 max-[500px]:flex-col max-[500px]:items-center max-[500px]:gap-y-1">
