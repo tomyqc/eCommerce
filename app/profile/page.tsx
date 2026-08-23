@@ -29,7 +29,7 @@ export default function ProfilePage() {
     const response = await fetch("/api/profile", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
     const result = await response.json().catch(() => ({})); setSaving(false);
     if (!response.ok) { toast.error(result.error || "Profile could not be updated"); return; }
-    await update({ name: result.name, email: result.email, image: result.image });
+    await update({ name: result.name, email: result.email });
     setForm((current) => ({ ...current, password: "" })); toast.success("Profile updated");
   };
 
