@@ -66,6 +66,10 @@ export async function GET(request: Request) {
       continue;
     }
   }
-  const fallback = await readFile(path.join(process.cwd(), "public", "pc icon.png"));
-  return new Response(new Uint8Array(fallback), { headers: { "Content-Type": "image/png", "Cache-Control": "no-store" } });
+  try {
+    const fallback = await readFile(path.join(process.cwd(), "public", "pc icon.png"));
+    return new Response(new Uint8Array(fallback), { headers: { "Content-Type": "image/png", "Cache-Control": "no-store" } });
+  } catch {
+    return new Response(null, { status: 404 });
+  }
 }

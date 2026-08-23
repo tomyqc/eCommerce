@@ -58,6 +58,10 @@ const CategoryCarousel = ({ categories }: { categories: Category[] }) => {
                     height="147"
                     alt={category.name}
                     className="h-[clamp(90px,12vw,147px)] w-[clamp(90px,12vw,147px)] object-contain"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = "/pc icon.png";
+                    }}
                   />
                   <h3 className="text-center text-sm font-semibold leading-tight max-md:text-xs">
                     <span className="block">{labels.english}</span>

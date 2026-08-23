@@ -2,6 +2,7 @@ import config from './config';
 
 const getProductImagePath = (image?: string) => {
   if (!image) return "/product_placeholder.jpg";
+  if (image.startsWith("data:image/")) return image;
   try {
     const parsedImage = new URL(image);
     if (parsedImage.pathname.startsWith("/media/")) {

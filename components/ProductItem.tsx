@@ -33,6 +33,10 @@ const ProductItem = ({
           src={getProductImageUrl(product.mainImage)}
           className="h-full w-full object-contain [mask-image:radial-gradient(ellipse_at_center,black_78%,transparent_100%)]"
           alt={sanitize(product?.title) || "Product image"}
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src = "/product_placeholder.jpg";
+          }}
         />
       </Link>
       <Link

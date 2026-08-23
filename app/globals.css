@@ -28,12 +28,12 @@
     transform: translateX(-120%);
   }
 
-  19% {
+  20% {
     opacity: 1;
     transform: translateX(0);
   }
 
-  81% {
+  64% {
     opacity: 1;
     transform: translateX(0);
   }
@@ -54,7 +54,7 @@
   }
 
   .animate-new-product-cycle {
-    animation: new-product-cycle 6s linear both;
+    animation: new-product-cycle 4.5s linear both;
   }
 }
 
