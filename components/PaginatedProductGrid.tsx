@@ -9,9 +9,10 @@ type PaginatedProductGridProps = {
   totalPages: number;
   pageSize: number;
   endpoint: string;
+  columns: "home" | "shop";
 };
 
-export default function PaginatedProductGrid({ initialProducts, initialPage, totalPages, pageSize, endpoint }: PaginatedProductGridProps) {
+export default function PaginatedProductGrid({ initialProducts, initialPage, totalPages, pageSize, endpoint, columns }: PaginatedProductGridProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [page, setPage] = useState(initialPage);
   const [direction, setDirection] = useState<"next" | "previous">("next");
@@ -37,7 +38,7 @@ export default function PaginatedProductGrid({ initialProducts, initialPage, tot
   };
 
   return <>
-    <div key={transitionKey} className={`grid grid-cols-5 justify-items-center gap-x-1 gap-y-5 px-2 py-5 max-md:grid-cols-3 max-[500px]:grid-cols-2 ${direction === "next" ? "animate-products-next" : "animate-products-previous"}`}>
+    <div key={transitionKey} className={`grid ${columns === "home" ? "grid-cols-5 max-md:grid-cols-3 max-[500px]:grid-cols-2" : "grid-cols-3 max-lg:grid-cols-2 max-[500px]:grid-cols-1"} justify-items-center gap-x-1 gap-y-5 px-2 py-5 ${direction === "next" ? "animate-products-next" : "animate-products-previous"}`}>
       {products.map((product) => <ProductItem key={product.id} product={product} color="black" />)}
     </div>
     {totalPages > 1 && <div className="join flex justify-center py-8">

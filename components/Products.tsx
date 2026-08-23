@@ -45,7 +45,7 @@ const Products = async ({ params, searchParams, totalPages = 1 }: { params: { sl
     products = [];
   }
 
-  return products.length > 0 ? <PaginatedProductGrid initialProducts={products} initialPage={page} totalPages={totalPages} pageSize={9} endpoint={`/api/products?sort=${typeof searchParams?.sort === "string" ? encodeURIComponent(searchParams.sort) : ""}${categoryName ? `&category=${encodeURIComponent(categoryName)}` : ""}`} /> : (
+  return products.length > 0 ? <PaginatedProductGrid initialProducts={products} initialPage={page} totalPages={totalPages} pageSize={9} endpoint={`/api/products?sort=${typeof searchParams?.sort === "string" ? encodeURIComponent(searchParams.sort) : ""}${categoryName ? `&category=${encodeURIComponent(categoryName)}` : ""}`} columns="shop" /> : (
         <h3 className="text-3xl mt-5 text-center w-full col-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
           No products found for specified query
         </h3>

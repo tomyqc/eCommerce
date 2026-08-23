@@ -27,7 +27,7 @@ const ProductsSection = async ({ page = 1, totalPages = 1 }: { page?: number; to
     <div className="bg-transparent border-0">
       <div className="mx-auto max-w-screen-2xl pt-5">
         <Heading title="Products المنتوجات" className="mt-5" />
-        {products.length > 0 ? <PaginatedProductGrid initialProducts={products} initialPage={page} totalPages={totalPages} pageSize={15} endpoint="/api/products" /> : (
+        {products.length > 0 ? <PaginatedProductGrid initialProducts={products} initialPage={page} totalPages={totalPages} pageSize={15} endpoint="/api/products" columns="home" /> : (
             <div className="col-span-full text-center text-black py-10">
               <p>No products available at the moment.</p>
             </div>
