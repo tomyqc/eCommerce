@@ -20,6 +20,7 @@ type PromotionProduct = {
 };
 const PromotionWidget = () => {
   const [products, setProducts] = useState<PromotionProduct[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     apiClient.get("/api/products", { cache: "no-store" }).then(async (response) => {
@@ -35,17 +36,19 @@ const PromotionWidget = () => {
     <section className="mx-auto max-w-screen-2xl px-4 py-5" aria-label="Promotions">
       <Heading title="New Products المنتوجات الجديدة" className="mt-10" />
       <div className="relative left-1/2 h-96 w-screen -translate-x-1/2 overflow-hidden bg-transparent max-md:h-72" aria-label="New and promo products">
-        <div className="flex h-full w-max animate-product-marquee-reverse" style={{ animationDuration: `${Math.max(products.length * 3.75, 27)}s` }}>
-          {[...products, ...products].map((product, productIndex) => {
-            return (
-            <Link key={`${product.id}-${productIndex}`} href={`/product/${product.slug}`} className="flex h-full w-[20vw] min-w-[20vw] shrink-0 flex-col items-center justify-center px-5 py-5 max-md:w-[50vw] max-md:min-w-[50vw]">
-              <div className="relative h-[78%] w-full">
-                <img src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && product.couponPercent > 0)))} alt={product.title} className="h-full w-full object-contain" />
-              </div>
-            </Link>
-            );
-          })}
-        </div>
+        {(() => {
+          const product = products[activeIndex % products.length];
+          const isPromo = product.isSold || Boolean(product.couponCode && product.couponPercent > 0);
+          return <Link key={`${product.id}-${activeIndex}`} href={`/product/${product.slug}`} onAnimationEnd={() => setActiveIndex((index) => (index + 1) % products.length)} className="animate-new-product-cycle absolute inset-0 mx-auto flex h-full w-full max-w-xl flex-col items-center justify-center px-5 py-5">
+            <div className="relative h-[72%] w-full">
+              <img src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(isPromo))} alt={product.title} className="h-full w-full object-contain" />
+            </div>
+            <div className="text-center text-black">
+              <p className="text-lg font-semibold max-md:text-base">{product.title}</p>
+              <p className="text-base max-md:text-sm">{product.price} DZD{isPromo ? " - Promo" : " - New"}</p>
+            </div>
+          </Link>;
+        })()}
       </div>
     </section>
   );

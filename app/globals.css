@@ -22,6 +22,28 @@
   }
 }
 
+@keyframes new-product-cycle {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+
+  19% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  81% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+
 @layer utilities {
   .animate-product-marquee {
     animation: product-marquee linear infinite;
@@ -29,6 +51,10 @@
 
   .animate-product-marquee-reverse {
     animation: product-marquee-reverse linear infinite;
+  }
+
+  .animate-new-product-cycle {
+    animation: new-product-cycle 1.6s linear both;
   }
 }
 
