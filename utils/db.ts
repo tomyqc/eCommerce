@@ -1,9 +1,12 @@
 import { PrismaClient } from "@prisma/client"; 
 
 const prismaClientSingleton = () => {
-    // Validate that DATABASE_URL is present
     if (!process.env.DATABASE_URL) {
-        throw new Error('DATABASE_URL environment variable is required');
+        return new Proxy({} as PrismaClient, {
+            get() {
+                throw new Error('DATABASE_URL environment variable is required for database operations');
+            },
+        });
     }
 
     // Parse DATABASE_URL to check SSL configuration
