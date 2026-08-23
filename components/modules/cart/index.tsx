@@ -101,9 +101,9 @@ export const CartModule = () => {
         className="mt-16 rounded-lg border border-gray-200 bg-transparent px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
       >
         <h2 id="summary-heading" className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-lg font-medium text-gray-900">
-          <span className="text-left">Summary of order</span>
-          <span className="text-center" dir="rtl">عملية الطلب</span>
+          <span className="text-left">Order</span>
           <span aria-hidden="true" />
+          <span className="text-right" dir="rtl">عملية الطلب</span>
         </h2>
 
         <dl className="mt-6 space-y-4">

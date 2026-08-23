@@ -40,6 +40,7 @@ const SettingsPage = () => {
   const [pubs, setPubs] = useState<{ slot: string; name: string; image: string }[]>([]);
   const [pubUploading, setPubUploading] = useState<string | null>(null);
   const [paymentAccountsOpen, setPaymentAccountsOpen] = useState(false);
+  const [shippingPriceOpen, setShippingPriceOpen] = useState(false);
   const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "", shippingCost: 5 });
   const [brandingOpen, setBrandingOpen] = useState(false);
   const [announcementsOpen, setAnnouncementsOpen] = useState(false);
@@ -283,6 +284,14 @@ const SettingsPage = () => {
         <button type="button" className="btn btn-primary w-fit" onClick={() => { setPaymentLogosOpen(!paymentLogosOpen); if (!paymentLogosOpen) { loadLogos(); loadPaymentAccounts(); } }}>
           {paymentLogosOpen ? "Close payment methods" : "Manage payment methods"}
         </button>
+        <button type="button" className="btn btn-primary w-fit" onClick={() => { setShippingPriceOpen(!shippingPriceOpen); if (!shippingPriceOpen) loadPaymentAccounts(); }}>
+          {shippingPriceOpen ? "Close shipping price" : "Manage shipping price"}
+        </button>
+        {shippingPriceOpen && <section className="flex max-w-xl flex-col gap-y-4 border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold">Shipping price</h2>
+          <label className="form-control"><span className="label-text">Shipping price</span><input className="input input-bordered" type="number" min="0" step="1" value={paymentAccounts.shippingCost} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, shippingCost: Math.max(0, Number(event.target.value) || 0) })} placeholder="5" /></label>
+          <button type="button" className="btn btn-primary w-fit" onClick={savePaymentAccounts}>Save shipping price</button>
+        </section>}
         {paymentLogosOpen && <div className="flex flex-col gap-y-4">
           <p className="text-gray-600">Replace, add, or delete payment logos using SVG, PNG, JPG, or JPEG files.</p>
           {logos.map((logo) => (
@@ -311,7 +320,6 @@ const SettingsPage = () => {
           <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("ccp")}>Delete CCP account</button>
           <label className="form-control"><span className="label-text">Bank account</span><input className="input input-bordered" value={paymentAccounts.bankAccount} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, bankAccount: event.target.value })} placeholder="Bank account / RIB" /></label>
           <button type="button" className="btn btn-outline w-fit" onClick={() => deletePaymentAccount("bank")}>Delete bank account</button>
-          <label className="form-control"><span className="label-text">Shipping price</span><input className="input input-bordered" type="number" min="0" step="1" value={paymentAccounts.shippingCost} onChange={(event) => setPaymentAccounts({ ...paymentAccounts, shippingCost: Math.max(0, Number(event.target.value) || 0) })} placeholder="5" /></label>
           <button type="button" className="btn btn-primary w-fit" onClick={savePaymentAccounts}>Save payment accounts</button>
         </section>}
         <button type="button" className="btn btn-primary w-fit" onClick={() => { setBrandingOpen(!brandingOpen); if (!brandingOpen) loadBranding(); }}>
