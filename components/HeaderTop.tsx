@@ -65,7 +65,12 @@ const HeaderTop = () => {
         </ul>
       </div>
     </div>
-    <div className="bg-blue-50 px-4 py-2 text-center text-sm font-semibold text-blue-900">Download the Aiden Store Android app directly from our website for faster shopping, exclusive offers, and easy order updates.</div>
+    <div className="bg-blue-50 px-4 py-2 text-center text-sm font-semibold text-blue-900">
+      <a href="/aiden-store.apk" download className="underline decoration-blue-300 underline-offset-2 hover:text-blue-700">
+        Download the Aiden Store app directly from our website for faster shopping, exclusive offers, and easy order updates.
+      </a>
+      <span className="block text-right text-xs font-semibold" dir="rtl" lang="ar">حمل تطبيق aiden store مباشرة من الصفحة لعملية شراء سريعة، عروض حصرية و تحديث سهل للطلبيات</span>
+    </div>
     </>
   );
 };
