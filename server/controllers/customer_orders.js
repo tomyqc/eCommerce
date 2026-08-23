@@ -41,26 +41,6 @@ async function createCustomerOrder(request, response) {
       });
     }
 
-    // Check for duplicate orders (same email and total within last 1 minute) - less strict
-    const oneMinuteAgo = new Date(Date.now() - 1 * 60 * 1000);
-    const duplicateOrder = await prisma.customer_order.findFirst({
-      where: {
-        email: validatedData.email,
-        total: validatedData.total,
-        dateTime: {
-          gte: oneMinuteAgo
-        }
-      }
-    });
-
-    if (duplicateOrder) {
-      console.log("❌ Duplicate order detected (same email, amount, within 1 minute)");
-      return response.status(409).json({
-        error: "Duplicate order detected",
-        details: "An identical order was just created. Please wait a moment before creating another order with the same details."
-      });
-    }
-
     console.log("Creating order in database...");
     // Create the order with validated data
     const corder = await prisma.customer_order.create({

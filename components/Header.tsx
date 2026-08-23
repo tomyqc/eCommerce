@@ -15,6 +15,7 @@ import HeaderTop from "./HeaderTop";
 import SearchInput from "./SearchInput";
 import Link from "next/link";
 import { FaBell } from "react-icons/fa6";
+import { FaArrowLeft } from "react-icons/fa6";
 
 import CartElement from "./CartElement";
 import NotificationBell from "./NotificationBell";
@@ -27,6 +28,7 @@ import apiClient from "@/lib/api";
 const Header = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const showBackButton = pathname !== "/";
   const { wishlist, setWishlist, wishQuantity } = useWishlistStore();
   const [siteLogo, setSiteLogo] = useState("/Logo.png");
 
@@ -83,6 +85,9 @@ const Header = () => {
 
   return (
     <header className="bg-transparent">
+      {showBackButton && <button type="button" onClick={() => window.history.back()} aria-label="Go back" title="Go back" className="fixed left-3 top-3 z-[300] flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-transparent text-black hover:bg-black/10">
+        <FaArrowLeft aria-hidden="true" />
+      </button>}
       <HeaderTop />
       {pathname.startsWith("/admin") === false && (
         <div className="h-32 flex items-center justify-between px-16 max-[1320px]:px-16 max-md:px-6 max-lg:flex-col max-lg:gap-y-7 max-lg:justify-center max-lg:h-60 max-w-screen-2xl mx-auto">

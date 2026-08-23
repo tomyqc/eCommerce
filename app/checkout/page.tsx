@@ -50,6 +50,7 @@ const CheckoutPage = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
   const [paymentAccounts, setPaymentAccounts] = useState({ ccpAccount: "", bankAccount: "", shippingCost: 5 });
   const [couponCode, setCouponCode] = useState("");
   const { products, total, clearCart, updateCartVariant } = useProductStore();
@@ -99,7 +100,7 @@ const CheckoutPage = () => {
     return errors;
   };
 
-  const makePurchase = async () => {
+  const makePurchase = async (confirmed = false) => {
     // Client-side validation first
     const validationErrors = validateForm();
     if (validationErrors.length > 0) {
@@ -138,6 +139,11 @@ const CheckoutPage = () => {
         toast.error("Please choose CCP or Bank transfer");
         return;
       }
+    }
+
+    if (!confirmed) {
+      setIsReviewing(true);
+      return;
     }
 
     setIsSubmitting(true);
@@ -371,7 +377,18 @@ const CheckoutPage = () => {
       <SectionTitle title="Checkout" path="Home | Cart | Checkout" />
       
 
-      <main className="relative mx-auto grid max-w-screen-2xl grid-cols-1 gap-x-16 lg:grid-cols-2 lg:px-8 xl:gap-x-48">
+      {isReviewing ? <section className="mx-auto w-full max-w-3xl px-5 py-12 text-black">
+        <h1 className="text-center text-3xl font-semibold">Confirm order / تأكيد الطلب</h1>
+        <div className="mt-8 grid gap-4 border border-gray-300 p-6">
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-3"><span className="text-left">Name</span><span className="text-center">{checkoutForm.name} {checkoutForm.lastname}</span><span className="text-right" dir="rtl">الاسم</span></div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-3"><span className="text-left">Phone</span><span className="text-center">{checkoutForm.phone}</span><span className="text-right" dir="rtl">الهاتف</span></div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-3"><span className="text-left">Email</span><span className="text-center break-all">{checkoutForm.email}</span><span className="text-right" dir="rtl">البريد الإلكتروني</span></div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-3"><span className="text-left">Address</span><span className="text-center">{checkoutForm.adress}, {checkoutForm.apartment}, {getWilayaName(checkoutForm.wilaya)}</span><span className="text-right" dir="rtl">العنوان</span></div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-3"><span className="text-left">Payment</span><span className="text-center">{checkoutForm.paymentMethod === "online" ? checkoutForm.paymentProvider : "Cash on delivery"}</span><span className="text-right" dir="rtl">الدفع</span></div>
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-3 border-t border-gray-300 pt-4 font-semibold"><span className="text-left">Total</span><span className="text-center">{formatDZD(orderTotal)}</span><span className="text-right" dir="rtl">المجموع</span></div>
+        </div>
+        <div className="mt-6 flex justify-center gap-3"><button type="button" className="bg-blue-500 px-6 py-3 font-semibold text-white hover:bg-blue-600 disabled:opacity-50" onClick={() => makePurchase(true)} disabled={isSubmitting}>Confirm / تأكيد</button><button type="button" className="border border-gray-400 px-6 py-3 font-semibold text-black hover:bg-black/10" onClick={() => setIsReviewing(false)} disabled={isSubmitting}>Cancel / إلغاء</button></div>
+      </section> : <main className="relative mx-auto grid max-w-screen-2xl grid-cols-1 gap-x-16 lg:grid-cols-2 lg:px-8 xl:gap-x-48">
         <h1 className="sr-only">Order information</h1>
 
         {/* Order Summary */}
@@ -713,7 +730,7 @@ const CheckoutPage = () => {
             <div className="mt-10 border-t border-gray-200 pt-6 ml-0">
               <button
                 type="button"
-                onClick={makePurchase}
+                onClick={() => makePurchase()}
                 disabled={isSubmitting}
                 className="w-full rounded-md border border-transparent bg-blue-500 px-20 py-2 text-lg font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
@@ -722,7 +739,7 @@ const CheckoutPage = () => {
             </div>
           </div>
         </form>
-      </main>
+      </main>}
     </div>
   );
 };
