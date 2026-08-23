@@ -5,13 +5,17 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 const RegisterPage = () => {
   const [error, setError] = useState("");
+  const [googleAvailable, setGoogleAvailable] = useState(false);
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
 
   useEffect(() => {
+    fetch("/api/auth/providers").then((response) => response.ok ? response.json() : {}).then((providers: Record<string, unknown>) => setGoogleAvailable(Boolean(providers.google))).catch(() => undefined);
     // chechking if user has already registered redirect to home page
     if (sessionStatus === "authenticated") {
       router.replace("/");
@@ -243,6 +247,7 @@ const RegisterPage = () => {
                 </p>
               </div>
             </form>
+            {googleAvailable && <div className="mt-6 border-t border-gray-200 pt-6"><button type="button" className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-3 py-2 text-black" onClick={() => signIn("google")}><FcGoogle /><span className="text-sm font-semibold">Continue with Google</span></button></div>}
           </div>
         </div>
       </div>
