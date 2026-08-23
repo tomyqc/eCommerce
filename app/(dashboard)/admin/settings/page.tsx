@@ -7,6 +7,7 @@ import apiClient from "@/lib/api";
 import { convertCategoryNameToURLFriendly } from "../../../../utils/categoryFormating";
 import BottomPagesManager from "@/components/BottomPagesManager";
 import { FaShapes } from "react-icons/fa6";
+import Link from "next/link";
 
 const SettingsPage = () => {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -202,7 +203,7 @@ const SettingsPage = () => {
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col">
       <DashboardSidebar />
       <main className="flex flex-col gap-y-6 w-full p-5">
-        <h1 className="text-3xl font-semibold">Settings</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-semibold">Settings</h1><Link href="/" className="btn btn-outline">Back to main menu</Link></div>
         <button type="button" className="btn btn-primary w-fit" onClick={() => { setCategoriesOpen(!categoriesOpen); if (!categoriesOpen) loadCategories(); }}>
           {categoriesOpen ? "Close categories" : <><FaShapes aria-hidden="true" /> Manage categories</>}
         </button>
@@ -278,11 +279,10 @@ const SettingsPage = () => {
         <button type="button" className="btn btn-primary w-fit" onClick={() => { setBrandingOpen(!brandingOpen); if (!brandingOpen) loadBranding(); }}>
           {brandingOpen ? "Close Manage Logo" : "Manage Logo"}
         </button>
-        {brandingOpen && <section className="flex max-w-xl flex-col gap-y-5 border border-gray-200 p-6">
+        {brandingOpen && <section className="grid max-w-4xl gap-6 border border-gray-200 p-6 md:grid-cols-2">
           <h2 className="text-xl font-semibold">Website logo and background</h2>
-          <div><img src={branding.logoPath} alt="Current website logo" className="h-20 w-48 object-contain" /><p className="mt-2 font-medium">Website logo</p><input className="file-input file-input-bordered mt-2 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("logo", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("logo")}>Restore Logo.png</button></div>
-          <div><img src={branding.backgroundPath} alt="Current website background" className="h-32 w-full object-cover" /><p className="mt-2 font-medium">Website background</p><input className="file-input file-input-bordered mt-2 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("background", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("background")}>Restore background</button></div>
-          <label className="form-control"><span className="label-text">Background opacity: {Math.round(branding.backgroundOpacity * 100)}%</span><input type="range" min="0" max="1" step="0.05" value={branding.backgroundOpacity} onChange={(event) => setBranding({ ...branding, backgroundOpacity: Number(event.target.value) })} /><button type="button" className="btn btn-primary mt-2 w-fit" onClick={saveOpacity}>Save opacity</button></label>
+          <div><h2 className="text-xl font-semibold">Website logo</h2><img src={branding.logoPath} alt="Current website logo" className="mt-3 h-24 w-full object-contain" /><input className="file-input file-input-bordered mt-3 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("logo", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("logo")}>Restore logo</button></div>
+          <div><h2 className="text-xl font-semibold">Website background photo</h2><img src={branding.backgroundPath} alt="Current website background photo" className="mt-3 h-40 w-full object-cover" /><p className="mt-2 text-sm text-gray-600">Current uploaded background photo</p><input className="file-input file-input-bordered mt-3 w-full" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => uploadBranding("background", event.target.files?.[0])} /><button type="button" className="btn btn-sm btn-outline mt-2" onClick={() => resetBranding("background")}>Restore background</button><label className="form-control mt-4"><span className="label-text">Background opacity: {Math.round(branding.backgroundOpacity * 100)}%</span><input type="range" min="0" max="1" step="0.05" value={branding.backgroundOpacity} onChange={(event) => setBranding({ ...branding, backgroundOpacity: Number(event.target.value) })} /><button type="button" className="btn btn-primary mt-2 w-fit" onClick={saveOpacity}>Save opacity</button></label></div>
         </section>}
         <BottomPagesManager />
       </main>

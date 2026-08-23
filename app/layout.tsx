@@ -28,7 +28,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession();
-  const siteSettings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: {}, update: {} });
+  const siteSettings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png" }, update: {} });
   return (
     <html lang="en" data-theme="light">
       <body className={inter.className} style={{ "--site-background-image": `url("${siteSettings.backgroundPath}")`, "--site-background-opacity": siteSettings.backgroundOpacity } as React.CSSProperties}>

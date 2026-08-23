@@ -17,7 +17,7 @@ model Product {
   id             String                   @id @default(uuid())
   slug           String                   @unique
   title          String
-  mainImage      String
+  mainImage      String                   @db.LongText
   price          Int                      @default(0)
   rating         Int                      @default(0)
   description    String
@@ -45,7 +45,7 @@ model Product {
 model Image {
   imageID   String @id @default(uuid())
   productID String
-  image     String
+  image     String   @db.LongText
 }
 
 model User {
@@ -54,7 +54,7 @@ model User {
   email         String?        @unique
   phone         String?
   password      String?
-  image         String?
+  image         String?        @db.LongText
   role          String?        @default("user")
   permissions   Json?
   merchants     Merchant[]
@@ -164,8 +164,8 @@ model PaymentSettings {
 
 model SiteSettings {
   id               String   @id @default("default")
-  logoPath         String   @default("/Logo.png")
-  backgroundPath   String   @default("/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png")
+  logoPath         String   @db.LongText
+  backgroundPath   String   @db.LongText
   backgroundOpacity Float   @default(0.2)
   updatedAt        DateTime @updatedAt
 }

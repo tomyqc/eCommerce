@@ -4,10 +4,12 @@ import prisma from "@/utils/db";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const allowedTypes: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
+const defaultLogoPath = "/Logo.png";
+const defaultBackgroundPath = "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png";
 const isAdmin = async () => (await getServerSession(authOptions))?.user?.role === "admin";
 
 export async function GET() {
-  const settings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: {}, update: {} });
+  const settings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { logoPath: "/Logo.png", backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png" }, update: {} });
   return NextResponse.json(settings, { headers: { "Cache-Control": "no-store" } });
 }
 
@@ -16,7 +18,7 @@ export async function PUT(request: Request) {
   const body = await request.json();
   const opacity = Number(body.backgroundOpacity);
   const settings = await prisma.siteSettings.upsert({
-    where: { id: "default" }, create: {},
+    where: { id: "default" }, create: { logoPath: defaultLogoPath, backgroundPath: defaultBackgroundPath },
     update: { backgroundOpacity: Number.isFinite(opacity) ? Math.min(1, Math.max(0, opacity)) : 0.2 },
   });
   return NextResponse.json(settings);
@@ -32,7 +34,7 @@ export async function POST(request: Request) {
   if (!extension || file.size > 4 * 1024 * 1024) return NextResponse.json({ error: "Use a PNG, JPG, or WebP image smaller than 4 MB" }, { status: 400 });
   const dataUrl = `data:${file.type};base64,${Buffer.from(await file.arrayBuffer()).toString("base64")}`;
   const field = kind === "logo" ? { logoPath: dataUrl } : { backgroundPath: dataUrl };
-  const settings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { ...field }, update: field });
+  const settings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { logoPath: field.logoPath || defaultLogoPath, backgroundPath: field.backgroundPath || defaultBackgroundPath }, update: field });
   return NextResponse.json(settings);
 }
 
@@ -40,7 +42,7 @@ export async function DELETE(request: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
   const kind = new URL(request.url).searchParams.get("kind");
   if (kind !== "logo" && kind !== "background") return NextResponse.json({ error: "Invalid branding type" }, { status: 400 });
-  const field = kind === "logo" ? { logoPath: "/Logo.png" } : { backgroundPath: "/ChatGPT Image Aug 20, 2026, 01_07_50 PM.png" };
-  const settings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { ...field }, update: field });
+  const field = kind === "logo" ? { logoPath: defaultLogoPath } : { backgroundPath: defaultBackgroundPath };
+  const settings = await prisma.siteSettings.upsert({ where: { id: "default" }, create: { logoPath: field.logoPath || defaultLogoPath, backgroundPath: field.backgroundPath || defaultBackgroundPath }, update: field });
   return NextResponse.json(settings);
 }
