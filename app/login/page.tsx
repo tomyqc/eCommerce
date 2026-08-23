@@ -74,9 +74,9 @@ const LoginPage = () => {
     return <h1>Loading...</h1>;
   }
   return (
-    <div className="bg-white">
+    <div className="bg-transparent">
       <SectionTitle title="Login" path="Home | Login" />
-      <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-white">
+      <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-transparent">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-2xl font-normal leading-9 tracking-tight text-gray-900">
             Sign in to your account
@@ -84,7 +84,7 @@ const LoginPage = () => {
         </div>
 
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-[480px]">
-          <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+          <div className="bg-transparent px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
@@ -171,7 +171,7 @@ const LoginPage = () => {
                   <div className="w-full border-t border-gray-200" />
                 </div>
                 <div className="relative flex justify-center text-sm font-medium leading-6">
-                  <span className="bg-white px-6 text-gray-900">
+                  <span className="bg-transparent px-6 text-gray-900">
                     Or continue with
                   </span>
                 </div>

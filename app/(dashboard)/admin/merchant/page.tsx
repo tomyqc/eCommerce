@@ -55,7 +55,7 @@ export default function MerchantPage() {
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-transparent rounded-lg p-6">
           {loading ? (
             <div className="text-center py-10">Loading merchants...</div>
           ) : merchants.length > 0 ? (

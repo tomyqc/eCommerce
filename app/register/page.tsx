@@ -105,9 +105,9 @@ const RegisterPage = () => {
     return <h1>Loading...</h1>;
   }
   return (
-    <div className="bg-white">
+    <div className="bg-transparent">
       <SectionTitle title="Register" path="Home | Register" />
-      <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-white">
+      <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-transparent">
         <div className="flex justify-center flex-col items-center">
           <h2 className="mt-6 text-center text-2xl leading-9 tracking-tight text-gray-900">
             Sign up on our website
@@ -115,7 +115,7 @@ const RegisterPage = () => {
         </div>
 
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-[480px]">
-          <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+          <div className="bg-transparent px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">Phone number</label>

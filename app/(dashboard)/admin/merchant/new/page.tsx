@@ -73,7 +73,7 @@ export default function NewMerchantPage() {
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-transparent rounded-lg p-6">
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">Password</label>

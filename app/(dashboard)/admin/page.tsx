@@ -72,7 +72,7 @@ const AdminDashboardPage = () => {
   const deliveredOrders = orders.filter((order) => order.status.toLowerCase() === "delivered").length;
   const totalRevenue = orders.reduce((total, order) => total + Number(order.total || 0), 0);
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col">
+    <div className="bg-transparent flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col">
       <DashboardSidebar />
       <div className="flex flex-col items-center ml-5 gap-y-4 w-full max-xl:ml-0 max-xl:px-2 max-xl:mt-5 max-md:gap-y-1">
         <div className="grid w-full grid-cols-3 gap-3 max-md:grid-cols-1">

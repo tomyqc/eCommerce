@@ -135,7 +135,7 @@ const NotificationsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -149,7 +149,7 @@ const NotificationsPage = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-transparent rounded-lg border border-gray-200 p-6 mb-6">
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="mb-4">
             <div className="relative">

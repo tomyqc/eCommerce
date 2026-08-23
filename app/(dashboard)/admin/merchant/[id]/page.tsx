@@ -187,7 +187,7 @@ const handleInputChange = (
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-transparent rounded-lg p-6 mb-6">
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">Name</label>
@@ -271,7 +271,7 @@ const handleInputChange = (
           </form>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-transparent rounded-lg p-6">
           <h2 className="text-xl font-bold mb-4">Merchant Products</h2>
           {merchant.products.length > 0 ? (
             <table className="w-full">

@@ -239,7 +239,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col">
+    <div className="bg-transparent flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col">
       <DashboardSidebar />
       <main className="flex flex-col gap-y-6 w-full p-5">
         <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-semibold">Settings</h1><Link href="/" className="btn btn-outline">Back to main menu</Link></div>

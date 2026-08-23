@@ -34,7 +34,7 @@ const ShopPage = async ({ params, searchParams }: { params: Promise<{ slug?: str
   const totalProducts = await prisma.product.count({ where: categorySlug ? { category: { name: categorySlug } } : undefined });
   
   return (
-    <div className="text-black bg-white">
+    <div className="text-black bg-transparent">
       <div className=" max-w-screen-2xl mx-auto px-10 max-sm:px-5">
         <Breadcrumb />
         <div>
