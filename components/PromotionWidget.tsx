@@ -33,8 +33,8 @@ const PromotionWidget = () => {
   if (products.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-screen-2xl px-4 py-5" aria-label="Promotions">
-      <Heading title="New Products المنتوجات الجديدة" className="mt-10" />
+    <section className="mx-auto max-w-screen-2xl px-4 py-2.5" aria-label="Promotions">
+      <Heading title="New Products المنتوجات الجديدة" className="mt-5" />
       <div className="relative left-1/2 h-96 w-screen -translate-x-1/2 overflow-hidden bg-transparent max-md:h-72" aria-label="New and promo products">
         {(() => {
           const product = products[activeIndex % products.length];

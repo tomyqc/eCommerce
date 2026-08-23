@@ -35,8 +35,8 @@ const ProductsSection = async () => {
 
   return (
     <div className="bg-transparent border-0">
-      <div className="mx-auto max-w-screen-2xl pt-10">
-        <Heading title="Products المنتوجات" className="mt-10" />
+      <div className="mx-auto max-w-screen-2xl pt-5">
+        <Heading title="Products المنتوجات" className="mt-5" />
         <div className="mx-auto grid w-full grid-cols-5 justify-items-center gap-x-1 gap-y-5 px-2 py-5">
           {products.length > 0 ? (
             products.map((product: any) => (

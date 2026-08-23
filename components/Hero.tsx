@@ -12,7 +12,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <div className="relative z-[101] w-full bg-transparent py-16 max-md:py-10">
+    <div className="relative z-[101] w-full bg-transparent py-8 max-md:py-5">
       <div className="mx-auto flex max-w-screen-2xl flex-col px-10">
         <div className="grid grid-cols-2 items-start gap-12 max-lg:grid-cols-1">
         <div className="flex flex-col gap-y-5 text-left">

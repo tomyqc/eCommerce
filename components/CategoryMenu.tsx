@@ -26,8 +26,8 @@ const CategoryMenu = async () => {
   }
 
   return (
-    <div className="bg-transparent py-5">
-      <Heading title="Categories الفئات" className="mt-10" />
+    <div className="bg-transparent py-2.5">
+      <Heading title="Categories الفئات" className="mt-5" />
       <CategoryCarousel categories={categories} />
     </div>
   );

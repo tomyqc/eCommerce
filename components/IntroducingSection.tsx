@@ -22,8 +22,8 @@ const benefits = [
 
 const IntroducingSection = () => {
   return (
-    <div className="bg-transparent py-10 pt-12">
-      <div className="text-center flex flex-col gap-y-5 items-center">
+    <div className="bg-transparent py-5 pt-6">
+      <div className="text-center flex flex-col gap-y-2.5 items-center">
         <h2 className="text-black text-8xl font-extrabold text-center mb-2 max-md:text-6xl max-[480px]:text-4xl">
           INTRODUCING <span className="text-black">AIDEN</span><span className="text-blue-600"> STORE</span>
         </h2>
@@ -34,7 +34,7 @@ const IntroducingSection = () => {
           <p className="text-black text-center text-2xl font-semibold max-md:text-xl max-[480px]:text-base">
             Trusted Quality. Delivered to You.
           </p>
-          <div className="mt-4 grid w-full max-w-6xl grid-cols-6 items-start gap-4 px-2 max-md:gap-2 max-[480px]:gap-1">
+          <div className="mt-2 grid w-full max-w-6xl grid-cols-6 items-start gap-2 px-2 max-md:gap-1 max-[480px]:gap-1">
             {benefits.map((benefit) => (
               <div key={benefit.slot} aria-label={benefit.name} title={benefit.name} className="flex min-w-0 flex-col items-center text-center transition-transform hover:scale-105">
                 <Image src={benefit.icon} alt={benefit.name} width={112} height={112} className="h-24 w-24 shrink-0 object-contain max-md:h-20 max-md:w-20 max-[480px]:h-16 max-[480px]:w-16" />
