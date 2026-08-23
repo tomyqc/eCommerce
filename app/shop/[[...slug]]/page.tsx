@@ -3,7 +3,6 @@ export const revalidate = 0;
 
 import {
   Breadcrumb,
-  Pagination,
   Products,
   SortBy,
 } from "@/components";
@@ -50,8 +49,7 @@ const ShopPage = async ({ params, searchParams }: { params: Promise<{ slug?: str
               <SortBy />
             </div>
             <div className="divider"></div>
-            <Products params={awaitedParams} searchParams={awaitedSearchParams} />
-            <Pagination totalPages={Math.max(1, Math.ceil(totalProducts / 9))} />
+            <Products params={awaitedParams} searchParams={awaitedSearchParams} totalPages={Math.max(1, Math.ceil(totalProducts / 9))} />
           </div>
         </div>
       </div>

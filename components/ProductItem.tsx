@@ -8,6 +8,8 @@
 // Output: Product item component that contains product image, title, link to the single product page, price, button...
 // *********************
 
+"use client";
+
 import React from "react";
 import Link from "next/link";
 

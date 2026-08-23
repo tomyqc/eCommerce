@@ -9,10 +9,9 @@
 // *********************
 
 import React from "react";
-import ProductItem from "./ProductItem";
 import Heading from "./Heading";
 import prisma from "@/utils/db";
-import Pagination from "./Pagination";
+import PaginatedProductGrid from "./PaginatedProductGrid";
 
 const ProductsSection = async ({ page = 1, totalPages = 1 }: { page?: number; totalPages?: number }) => {
   let products: any[] = [];
@@ -28,18 +27,11 @@ const ProductsSection = async ({ page = 1, totalPages = 1 }: { page?: number; to
     <div className="bg-transparent border-0">
       <div className="mx-auto max-w-screen-2xl pt-5">
         <Heading title="Products المنتوجات" className="mt-5" />
-        <div className="mx-auto grid w-full grid-cols-5 justify-items-center gap-x-1 gap-y-5 px-2 py-5">
-          {products.length > 0 ? (
-            products.map((product: Product) => (
-              <ProductItem key={product.id} product={product} color="black" />
-            ))
-          ) : (
+        {products.length > 0 ? <PaginatedProductGrid initialProducts={products} initialPage={page} totalPages={totalPages} pageSize={15} endpoint="/api/products" /> : (
             <div className="col-span-full text-center text-black py-10">
               <p>No products available at the moment.</p>
             </div>
           )}
-        </div>
-        <Pagination totalPages={totalPages} queryKey="homePage" />
       </div>
     </div>
   );

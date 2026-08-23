@@ -44,6 +44,16 @@
   }
 }
 
+@keyframes products-next {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes products-previous {
+  from { opacity: 0; transform: translateX(-100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 @layer utilities {
   .animate-product-marquee {
     animation: product-marquee linear infinite;
@@ -55,6 +65,14 @@
 
   .animate-new-product-cycle {
     animation: new-product-cycle 4.5s linear both;
+  }
+
+  .animate-products-next {
+    animation: products-next 420ms ease-out both;
+  }
+
+  .animate-products-previous {
+    animation: products-previous 420ms ease-out both;
   }
 }
 
