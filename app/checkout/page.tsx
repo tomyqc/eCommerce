@@ -367,11 +367,9 @@ const CheckoutPage = () => {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-transparent">
       <SectionTitle title="Checkout" path="Home | Cart | Checkout" />
       
-      <div className="hidden h-full w-1/2 bg-white lg:block" aria-hidden="true" />
-      <div className="hidden h-full w-1/2 bg-gray-50 lg:block" aria-hidden="true" />
 
       <main className="relative mx-auto grid max-w-screen-2xl grid-cols-1 gap-x-16 lg:grid-cols-2 lg:px-8 xl:gap-x-48">
         <h1 className="sr-only">Order information</h1>
@@ -379,7 +377,7 @@ const CheckoutPage = () => {
         {/* Order Summary */}
         <section
           aria-labelledby="summary-heading"
-          className="bg-gray-50 px-4 pb-10 pt-16 sm:px-6 lg:col-start-2 lg:row-start-1 lg:bg-transparent lg:px-0 lg:pb-16"
+          className="px-4 pb-10 pt-16 sm:px-6 lg:col-start-2 lg:row-start-1 lg:bg-transparent lg:px-0 lg:pb-16"
         >
           <div className="mx-auto max-w-lg lg:max-w-none">
             <h2 id="summary-heading" className="text-lg font-medium text-gray-900">

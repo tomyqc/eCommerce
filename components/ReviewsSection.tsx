@@ -113,7 +113,7 @@ const ReviewsSection = () => {
             </article>
           ))}
         </div>
-        <div className="relative left-1/2 mt-5 h-52 w-screen -translate-x-1/2 overflow-hidden bg-white/80 max-md:h-60" aria-label="آراء مميزة">
+        <div className="relative left-1/2 mt-5 h-52 w-screen -translate-x-1/2 overflow-hidden bg-transparent max-md:h-60" aria-label="آراء مميزة">
           <div
             className={`flex h-full ${featuredIndex < featuredReviews.length ? "transition-transform duration-[1300ms] ease-in-out" : ""}`}
             style={{ transform: `translateX(-${featuredIndex * 100}vw)` }}
