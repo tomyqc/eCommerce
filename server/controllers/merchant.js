@@ -1,5 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const bcrypt = require("bcryptjs");
+
+const isValidPassword = (password) => typeof password === "string" && password.length >= 10 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password);
 
 async function getAllMerchants(request, response) {
   try {
@@ -40,7 +43,13 @@ async function getMerchantById(request, response) {
 
 async function createMerchant(request, response) {
   try {
-    const { name, email, phone, address, description, status, grade, permissions } = request.body;
+    const { name, email, phone, password, address, description, status, grade, permissions } = request.body;
+    if (!name?.trim() || !phone?.trim() || !isValidPassword(password)) {
+      return response.status(400).json({ error: "Name, phone, and a password with 10+ characters, uppercase, lowercase, and number are required" });
+    }
+    const existingUser = await prisma.user.findFirst({ where: { OR: [{ phone: phone.trim() }, email ? { email } : { id: "__none__" }] } });
+    if (existingUser) return response.status(409).json({ error: "An agent with this phone or email already exists" });
+    const user = await prisma.user.create({ data: { name: name.trim(), email: email || null, phone: phone.trim(), password: await bcrypt.hash(password, 14), role: grade || "seller", permissions: Array.isArray(permissions) ? permissions : [] } });
 
     const merchant = await prisma.merchant.create({
       data: {
@@ -52,6 +61,7 @@ async function createMerchant(request, response) {
         status: status || "ACTIVE",
         grade: grade || "seller",
         permissions: Array.isArray(permissions) ? permissions : [],
+        userId: user.id,
       },
     });
 
@@ -82,6 +92,7 @@ async function updateMerchant(request, response) {
         permissions: Array.isArray(permissions) ? permissions : [],
       },
     });
+    if (merchant.userId) await prisma.user.update({ where: { id: merchant.userId }, data: { name, phone, role: grade, permissions: Array.isArray(permissions) ? permissions : [] } });
 
     return response.json(merchant);
   } catch (error) {

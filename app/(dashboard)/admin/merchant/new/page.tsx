@@ -10,6 +10,7 @@ export default function NewMerchantPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password: "",
     phone: "",
     address: "",
     description: "",
@@ -73,6 +74,10 @@ export default function NewMerchantPage() {
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Password</label>
+              <input type="password" name="password" value={formData.password} onChange={handleInputChange} required minLength={10} pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{10,}" title="At least 10 characters with uppercase, lowercase, and number" className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300" placeholder="10+ chars, upper, lower, number" />
+            </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Name</label>
               <input

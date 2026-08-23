@@ -20,7 +20,7 @@ export const authOptions = {
         try {
           const user = await prisma.user.findFirst({
             where: {
-              email: credentials.email,
+              OR: [{ email: credentials.email }, { phone: credentials.email }],
             },
           });
           if (user) {

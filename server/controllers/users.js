@@ -10,6 +10,7 @@ function excludePassword(user) {
 }
 
 const allowedPermissions = ["dashboard", "orders", "products", "categories", "bulk-upload"];
+const isValidPassword = (password) => typeof password === "string" && password.length >= 10 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password);
 function cleanPermissions(permissions) {
   if (!Array.isArray(permissions)) return null;
   return [...new Set(permissions.filter((permission) => allowedPermissions.includes(permission)))];
@@ -23,22 +24,22 @@ const getAllUsers = asyncHandler(async (request, response) => {
 });
 
 const createUser = asyncHandler(async (request, response) => {
-  const { email, password, role, name, permissions } = request.body;
+  const { email, phone, password, role, name, permissions } = request.body;
 
   // Basic validation
-  if (!email || !password) {
-    throw new AppError("Email and password are required", 400);
+  if (!password) {
+    throw new AppError("Password is required", 400);
   }
 
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (email && !emailRegex.test(email)) {
     throw new AppError("Invalid email format", 400);
   }
 
   // Password validation
-  if (password.length < 8) {
-    throw new AppError("Password must be at least 8 characters long", 400);
+  if (!isValidPassword(password)) {
+    throw new AppError("Password must be at least 10 characters and include an uppercase letter, lowercase letter, and number", 400);
   }
 
   const hashedPassword = await bcrypt.hash(password, 14);
@@ -46,6 +47,7 @@ const createUser = asyncHandler(async (request, response) => {
   const user = await prisma.user.create({
     data: {
       email,
+      phone: phone || null,
       name: name || null,
       password: hashedPassword,
       role: role || "user",
@@ -84,8 +86,8 @@ const updateUser = asyncHandler(async (request, response) => {
     updateData.email = email;
   }
   if (password) {
-    if (password.length < 8) {
-      throw new AppError("Password must be at least 8 characters long", 400);
+    if (!isValidPassword(password)) {
+      throw new AppError("Password must be at least 10 characters and include an uppercase letter, lowercase letter, and number", 400);
     }
     updateData.password = await bcrypt.hash(password, 14);
   }

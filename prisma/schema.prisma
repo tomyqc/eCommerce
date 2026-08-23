@@ -51,11 +51,13 @@ model Image {
 model User {
   id            String         @id @default(uuid())
   name          String?
-  email         String         @unique
+  email         String?        @unique
+  phone         String?
   password      String?
   image         String?
   role          String?        @default("user")
   permissions   Json?
+  merchants     Merchant[]
   Wishlist      Wishlist[]
   notifications Notification[]
   reviews       Review[]
@@ -190,6 +192,8 @@ model Merchant {
   status      String   @default("ACTIVE")
   grade       String   @default("seller")
   permissions Json?
+  userId      String?  @unique
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
