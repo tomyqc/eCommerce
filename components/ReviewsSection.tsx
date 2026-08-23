@@ -101,7 +101,7 @@ const ReviewsSection = () => {
         <Heading title="آراء العملاء وتعليقاتهم" />
         <div className="mt-5 grid grid-cols-3 gap-6 max-lg:grid-cols-1" dir="rtl">
           {reviews.map((review) => (
-            <article key={review.id} className="border border-gray-200 bg-white px-6 py-7 text-right shadow-sm">
+            <article key={review.id} className="border border-gray-200 bg-transparent px-6 py-7 text-right shadow-sm">
               <div className="text-xl tracking-widest text-blue-600" aria-label="5 من 5 نجوم">★★★★★</div>
               <p className="mt-4 text-base leading-7 text-gray-700">“{review.comment}”</p>
               <p className="mt-5 font-semibold text-black">{review.user.email}</p>

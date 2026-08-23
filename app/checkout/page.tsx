@@ -574,8 +574,8 @@ const CheckoutPage = () => {
                     <option value="">Choose a method</option><option value="CCP Transfer">CCP / BaridiMob</option><option value="Bank Transfer">Bank transfer</option>
                   </select>
                 </label>
-                {checkoutForm.paymentProvider === "CCP Transfer" && <p className="rounded bg-gray-50 p-3 text-sm">CCP account: {paymentAccounts.ccpAccount || "The seller has not added a CCP account yet."}</p>}
-                {checkoutForm.paymentProvider === "Bank Transfer" && <p className="rounded bg-gray-50 p-3 text-sm">Bank account: {paymentAccounts.bankAccount || "The seller has not added a bank account yet."}</p>}
+                {checkoutForm.paymentProvider === "CCP Transfer" && <p className="rounded border border-gray-200 p-3 text-sm">CCP account: {paymentAccounts.ccpAccount || "The seller has not added a CCP account yet."}</p>}
+                {checkoutForm.paymentProvider === "Bank Transfer" && <p className="rounded border border-gray-200 p-3 text-sm">Bank account: {paymentAccounts.bankAccount || "The seller has not added a bank account yet."}</p>}
               </div>}
               <div className="mt-5 border border-gray-200 p-4">
                 <label htmlFor="coupon-code" className="block text-sm font-medium text-gray-700">Coupon code / رمز التخفيض</label>
