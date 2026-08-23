@@ -57,7 +57,7 @@ const CategoryCarousel = ({ categories }: { categories: Category[] }) => {
                     width="147"
                     height="147"
                     alt={category.name}
-                    className="h-[clamp(90px,12vw,147px)] w-[clamp(90px,12vw,147px)] object-contain"
+                    className="h-[clamp(90px,12vw,147px)] w-[clamp(90px,12vw,147px)] bg-white object-contain"
                     onError={(event) => {
                       event.currentTarget.onerror = null;
                       event.currentTarget.src = "/pc icon.png";

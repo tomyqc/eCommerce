@@ -31,7 +31,7 @@ const ProductItem = ({
     <div className="flex min-w-0 w-full flex-col items-center gap-y-1 text-center">
       <Link
         href={`/product/${product.slug}`}
-        className={`relative flex ${largerImage ? "h-[16.8rem]" : "h-56"} w-full items-center justify-center overflow-hidden`}
+        className={`relative flex ${largerImage ? "h-[16.8rem]" : "h-56"} w-full items-center justify-center overflow-hidden bg-white`}
       >
         <img
           src={getProductImageUrl(product.mainImage)}

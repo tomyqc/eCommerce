@@ -40,7 +40,7 @@ const PromotionWidget = () => {
           const isPromo = product.isSold || Boolean(product.couponCode && product.couponPercent > 0);
           return <Link key={`${product.id}-${activeIndex}`} href={`/product/${product.slug}`} onAnimationEnd={() => setActiveIndex((index) => (index + 1) % products.length)} className="animate-new-product-cycle absolute inset-0 mx-auto flex h-full w-full max-w-xl flex-col items-center justify-center px-5 py-5">
             <div className="relative h-[72%] w-full">
-              <img src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(isPromo))} alt={product.title} className="h-full w-full object-contain" />
+              <img src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(isPromo))} alt={product.title} className="h-full w-full bg-white object-contain" />
             </div>
             <div className="text-center text-black">
               <p className="text-lg font-semibold max-md:text-base">{product.title}</p>

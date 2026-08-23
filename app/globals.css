@@ -83,6 +83,7 @@ body {
 
 body > * {
   position: relative;
+  z-index: 1;
 }
 
 body img {
@@ -94,7 +95,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 0;
   pointer-events: none;
   opacity: var(--site-background-opacity, 0.2);
   mix-blend-mode: multiply;

@@ -52,7 +52,7 @@ const ProductPhotoWidget = () => {
       <img
         src={getProductImageUrl(product.mainImage, product.inStock, product.isNew, Boolean(product.isSold || (product.couponCode && Number(product.couponPercent) > 0)))}
         alt={product.title}
-        className="h-[86%] w-full max-w-xl object-contain"
+        className="h-[86%] w-full max-w-xl bg-white object-contain"
         onError={(event) => {
           event.currentTarget.src = "/product_placeholder.jpg";
         }}
