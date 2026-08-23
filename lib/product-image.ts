@@ -18,7 +18,7 @@ const getProductImagePath = (image?: string) => {
 
 export const getProductImageUrl = (image?: string, inStock?: number, isNew?: boolean, isPromo?: boolean) => {
   const imagePath = getProductImagePath(image);
-  if (imagePath.startsWith("http")) return imagePath;
+  if (imagePath.startsWith("data:image/") || imagePath.startsWith("http")) return imagePath;
 
   const extensionIndex = imagePath.lastIndexOf(".");
   const suffix = Number(inStock) === 0 ? "-outofstock" : isPromo ? "-promo" : isNew ? "-new" : "";
