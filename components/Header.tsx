@@ -87,7 +87,7 @@ const Header = () => {
       {pathname.startsWith("/admin") === false && (
         <div className="h-32 bg-white flex items-center justify-between px-16 max-[1320px]:px-16 max-md:px-6 max-lg:flex-col max-lg:gap-y-7 max-lg:justify-center max-lg:h-60 max-w-screen-2xl mx-auto">
           <Link href="/">
-              <img src={siteLogo} alt="Aiden Store" className="relative right-5 h-16 w-auto max-w-[220px] object-contain" />
+              <img src={siteLogo} alt="Aiden Store" className="relative right-5 h-24 w-auto max-w-[330px] object-contain" />
           </Link>
           <SearchInput />
           <div className="flex gap-x-10 items-center">
@@ -100,13 +100,13 @@ const Header = () => {
       {pathname.startsWith("/admin") === true && (
         <div className="flex justify-between h-32 bg-white items-center px-16 max-[1320px]:px-10  max-w-screen-2xl mx-auto max-[400px]:px-5">
           <Link href="/">
-              <img src={siteLogo} alt="Aiden Store" className="h-16 w-auto max-w-[220px] object-contain" />
+              <img src={siteLogo} alt="Aiden Store" className="h-24 w-auto max-w-[330px] object-contain" />
           </Link>
           <div className="flex gap-x-5 items-center">
             <NotificationBell />
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="w-10">
-                <img src="/randomuser.jpg" alt="random profile photo" className="w-full h-full rounded-full" />
+                <img src={session?.user?.image || "/randomuser.jpg"} alt="Profile" className="w-full h-full rounded-full object-cover" />
               </div>
               <ul
                 tabIndex={0}
@@ -116,7 +116,7 @@ const Header = () => {
                   <Link href="/admin">Dashboard</Link>
                 </li>
                 <li>
-                  <a>Profile</a>
+                  <Link href="/profile">Profile</Link>
                 </li>
                 <li onClick={handleLogout}>
                   <a href="#">Logout</a>

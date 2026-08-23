@@ -9,10 +9,17 @@ export async function requireAdmin() {
     redirect("/login");
   }
   
-  if ((session as any)?.user?.role !== "admin") {
+  if ((session as any)?.user?.role !== "admin" && !((session as any)?.user?.permissions || []).length) {
     redirect("/");
   }
   
+  return session;
+}
+
+export async function requireDashboardAccess(permission: string) {
+  const session = await getServerSession(authOptions);
+  const permissions = (session as any)?.user?.permissions || [];
+  if (!session || ((session as any)?.user?.role !== "admin" && !permissions.includes(permission))) redirect("/");
   return session;
 }
 

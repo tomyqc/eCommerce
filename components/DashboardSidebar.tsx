@@ -19,8 +19,12 @@ import { MdCategory } from "react-icons/md";
 import { FaFileUpload } from "react-icons/fa";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const DashboardSidebar = () => {
+  const { data: session } = useSession();
+  const sessionUser = session?.user as (typeof session extends null ? never : { role?: string; permissions?: string[] }) | undefined;
+  const permissions = sessionUser?.permissions || [];
   const menuItems = [
     { href: "/admin", label: "Dashboard", icon: MdDashboard },
     { href: "/admin/orders", label: "Orders", icon: FaBagShopping },
@@ -28,14 +32,14 @@ const DashboardSidebar = () => {
     { href: "/admin/bulk-upload", label: "Bulk Upload", icon: FaFileUpload },
     { href: "/admin/categories", label: "Categories", icon: MdCategory },
     { href: "/admin/users", label: "Users", icon: FaRegUser },
-    { href: "/admin/merchant", label: "Merchant", icon: FaStore },
+    { href: "/admin/merchant", label: "Agents", icon: FaStore },
     { href: "/admin/settings", label: "Settings", icon: FaGear },
   ];
 
   return (
     <nav className="relative z-[200] w-full max-w-[520px] shrink-0 p-3 xl:w-[520px] max-xl:mx-auto" aria-label="Admin menu">
       <div className="grid grid-cols-3 gap-2 max-[420px]:grid-cols-2">
-        {menuItems.map(({ href, label, icon: Icon }) => (
+        {menuItems.filter(({ href }) => sessionUser?.role === "admin" || permissions.includes(href === "/admin" ? "dashboard" : href.split("/")[2])).map(({ href, label, icon: Icon }) => (
           <Link
             href={href}
             key={href}

@@ -16,12 +16,16 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
 
   const [userInput, setUserInput] = useState<{
     email: string;
+    name: string;
     newPassword: string;
     role: string;
+    permissions: string[];
   }>({
     email: "",
+    name: "",
     newPassword: "",
     role: "",
+    permissions: [],
   });
   const router = useRouter();
 
@@ -45,22 +49,20 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
   };
 
   const updateUser = async () => {
-    if (
-      userInput.email.length > 3 &&
-      userInput.role.length > 0 &&
-      userInput.newPassword.length > 0
-    ) {
+    if (userInput.email.length > 3 && userInput.role.length > 0) {
       if (!isValidEmailAddressFormat(userInput.email)) {
         toast.error("You entered invalid email address format");
         return;
       }
 
-      if (userInput.newPassword.length > 7) {
+      if (!userInput.newPassword || userInput.newPassword.length > 7) {
         try {
           const response = await apiClient.put(`/api/users/${id}`, {
             email: userInput.email,
-            password: userInput.newPassword,
+            name: userInput.name,
+            password: userInput.newPassword || undefined,
             role: userInput.role,
+            permissions: userInput.permissions,
           });
 
           if (response.status === 200) {
@@ -78,10 +80,7 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
         toast.error("Password must be longer than 7 characters");
         return;
       }
-    } else {
-      toast.error("For updating a user you must enter all values");
-      return;
-    }
+    } else toast.error("Email and role are required");
   };
 
   useEffect(() => {
@@ -94,8 +93,10 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
       .then((data) => {
         setUserInput({
           email: data?.email,
+          name: data?.name || "",
           newPassword: "",
           role: data?.role,
+          permissions: data?.permissions || [],
         });
       });
   }, [id]);
@@ -105,6 +106,9 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
       <DashboardSidebar />
       <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full">
         <h1 className="text-3xl font-semibold">User details</h1>
+        <div>
+          <label className="form-control w-full max-w-xs"><div className="label"><span className="label-text">Name:</span></div><input className="input input-bordered" value={userInput.name} onChange={(e) => setUserInput({ ...userInput, name: e.target.value })} /></label>
+        </div>
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -150,10 +154,15 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
               }
             >
               <option value="admin">admin</option>
+              <option value="agent">agent</option>
+              <option value="seller">seller</option>
+              <option value="promotor">promotor</option>
+              <option value="collaborator">collaborator</option>
               <option value="user">user</option>
             </select>
           </label>
         </div>
+        <fieldset className="flex max-w-md flex-col gap-2"><legend className="font-semibold">Dashboard access</legend>{["dashboard", "orders", "products", "categories", "bulk-upload"].map((permission) => <label key={permission} className="flex items-center gap-2 capitalize"><input type="checkbox" className="checkbox" checked={userInput.permissions.includes(permission)} onChange={(event) => setUserInput({ ...userInput, permissions: event.target.checked ? [...userInput.permissions, permission] : userInput.permissions.filter((item) => item !== permission) })} />{permission.replace("-", " ")}</label>)}</fieldset>
         <div className="flex gap-x-2 max-sm:flex-col">
           <button
             type="button"

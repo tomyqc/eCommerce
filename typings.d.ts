@@ -62,9 +62,12 @@ interface Category {
 
 interface User {
   id: string;
+  name?: string | null;
   email: string;
   password: string | null;
+  image?: string | null;
   role: string;
+  permissions?: string[] | null;
 }
 
 interface Order {
@@ -118,12 +121,14 @@ declare module "next-auth" {
       email: string;
       image: string;
       role: string;
+      permissions?: string[];
     };
   }
 
   interface User {
     id: string;
     role: string;
+    permissions?: string[];
   }
 }
 
@@ -131,5 +136,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: string;
+    permissions?: string[];
   }
 }

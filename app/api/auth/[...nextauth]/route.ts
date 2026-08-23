@@ -31,8 +31,11 @@ export const authOptions = {
             if (isPasswordCorrect) {
               return {
                 id: user.id,
+                name: user.name,
                 email: user.email,
+                image: user.image,
                 role: user.role,
+                permissions: user.permissions,
               };
             }
           }
@@ -93,6 +96,7 @@ export const authOptions = {
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        token.permissions = user.permissions;
         token.iat = Math.floor(Date.now() / 1000); // Issued at time
       }
       
@@ -112,6 +116,7 @@ export const authOptions = {
       if (token) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
+        session.user.permissions = token.permissions as string[];
       }
       return session;
     },

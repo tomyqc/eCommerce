@@ -1,4 +1,3 @@
-const path = require("path");
 const prisma = require("../utills/db"); // ✅ Use shared connection
 
 async function uploadMainImage(req, res) {
@@ -12,17 +11,11 @@ async function uploadMainImage(req, res) {
       return res.status(400).json({ message: "uploadedFile is required" });
     }
   
-    // Using mv method for moving file to the directory on the server
-    const publicDirectory = path.join(__dirname, "..", "..", "public");
-    const filePath = path.join(publicDirectory, path.basename(uploadedFile.name));
-
-    uploadedFile.mv(filePath, (err) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-  
-      res.status(200).json({ message: "Fajl je uspešno otpremljen", fileName: path.basename(uploadedFile.name) });
-    });
+    if (!uploadedFile.mimetype || !uploadedFile.mimetype.startsWith("image/") || uploadedFile.size > 4 * 1024 * 1024) {
+      return res.status(400).json({ message: "Use an image smaller than 4 MB" });
+    }
+    const dataUrl = `data:${uploadedFile.mimetype};base64,${uploadedFile.data.toString("base64")}`;
+    res.status(200).json({ message: "Image uploaded", fileName: dataUrl });
   }
 
   module.exports = {

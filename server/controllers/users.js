@@ -9,6 +9,12 @@ function excludePassword(user) {
   return userWithoutPassword;
 }
 
+const allowedPermissions = ["dashboard", "orders", "products", "categories", "bulk-upload"];
+function cleanPermissions(permissions) {
+  if (!Array.isArray(permissions)) return null;
+  return [...new Set(permissions.filter((permission) => allowedPermissions.includes(permission)))];
+}
+
 const getAllUsers = asyncHandler(async (request, response) => {
   const users = await prisma.user.findMany({});
   // Exclude password from all users
@@ -17,7 +23,7 @@ const getAllUsers = asyncHandler(async (request, response) => {
 });
 
 const createUser = asyncHandler(async (request, response) => {
-  const { email, password, role } = request.body;
+  const { email, password, role, name, permissions } = request.body;
 
   // Basic validation
   if (!email || !password) {
@@ -40,8 +46,10 @@ const createUser = asyncHandler(async (request, response) => {
   const user = await prisma.user.create({
     data: {
       email,
+      name: name || null,
       password: hashedPassword,
       role: role || "user",
+      permissions: cleanPermissions(permissions),
     },
   });
   // Exclude password from response
@@ -50,7 +58,7 @@ const createUser = asyncHandler(async (request, response) => {
 
 const updateUser = asyncHandler(async (request, response) => {
   const { id } = request.params;
-  const { email, password, role } = request.body;
+  const { email, password, role, name, permissions } = request.body;
 
   if (!id) {
     throw new AppError("User ID is required", 400);
@@ -84,6 +92,8 @@ const updateUser = asyncHandler(async (request, response) => {
   if (role) {
     updateData.role = role;
   }
+  if (name !== undefined) updateData.name = name || null;
+  if (permissions !== undefined) updateData.permissions = cleanPermissions(permissions);
 
   const updatedUser = await prisma.user.update({
     where: {
