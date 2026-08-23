@@ -39,7 +39,7 @@ export default function PaginatedProductGrid({ initialProducts, initialPage, tot
 
   return <>
     <div key={transitionKey} className={`grid ${columns === "home" ? "grid-cols-5 max-md:grid-cols-3 max-[500px]:grid-cols-2" : "grid-cols-3 max-lg:grid-cols-2 max-[500px]:grid-cols-1"} justify-items-center gap-x-1 gap-y-5 px-2 py-5 ${direction === "next" ? "animate-products-next" : "animate-products-previous"}`}>
-      {products.map((product) => <ProductItem key={product.id} product={product} color="black" />)}
+      {products.map((product) => <ProductItem key={product.id} product={product} color="black" largerImage={columns === "shop"} />)}
     </div>
     {totalPages > 1 && <div className="join flex justify-center py-8">
       {page > 1 && <button type="button" className="join-item btn btn-lg bg-blue-500 text-white hover:bg-white hover:text-blue-500" onClick={() => navigate(page - 1)} disabled={loading} aria-label="Previous products">«</button>}
